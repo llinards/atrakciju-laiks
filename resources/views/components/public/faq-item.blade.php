@@ -17,7 +17,7 @@
         </span>
 
         <span class="flex shrink-0 items-center justify-center rounded-xl bg-white p-2 text-gray-900 shadow-xs">
-            <x-public.icons.chevron-down class="size-5 transition-transform duration-200" ::class="open && 'rotate-180'" />
+            <x-public.icons.chevron-down class="size-5 transition-transform duration-200" x-bind:class="open && 'rotate-180'" />
         </span>
     </button>
 

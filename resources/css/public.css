@@ -36,3 +36,18 @@
 [x-cloak] {
     display: none !important;
 }
+
+@layer base {
+    /* Keyboard focus ring in brand color; white on colored surfaces for contrast */
+    :focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    .bg-brand :focus-visible,
+    .bg-splash :focus-visible,
+    .bg-sun :focus-visible {
+        outline-color: var(--color-white);
+    }
+}

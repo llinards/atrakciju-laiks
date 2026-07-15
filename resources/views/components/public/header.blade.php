@@ -39,7 +39,7 @@
                     :aria-expanded="open"
                 >
                     Piepūšamās atrakcijas
-                    <x-public.icons.chevron-down class="size-5 transition-transform duration-200" ::class="open && 'rotate-180'" />
+                    <x-public.icons.chevron-down class="size-5 transition-transform duration-200" x-bind:class="open && 'rotate-180'" />
                 </button>
 
                 <div
@@ -66,22 +66,19 @@
         <div class="flex flex-1 justify-end">
         <button
             type="button"
-            class="rounded-xl p-2 text-gray-600 hover:bg-gray-50 lg:hidden"
+            class="flex size-10 flex-col items-center justify-center gap-1.25 rounded-xl text-gray-600 hover:bg-gray-50 lg:hidden"
             @click="mobileMenuOpen = !mobileMenuOpen"
             :aria-expanded="mobileMenuOpen"
             aria-label="Izvēlne"
         >
-            <svg class="size-6" x-show="!mobileMenuOpen" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-            <svg class="size-6" x-cloak x-show="mobileMenuOpen" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
+            <span class="h-0.5 w-6 rounded-full bg-current transition-transform duration-300" :class="mobileMenuOpen && 'translate-y-1.75 rotate-45'"></span>
+            <span class="h-0.5 w-6 rounded-full bg-current transition-opacity duration-300" :class="mobileMenuOpen && 'opacity-0'"></span>
+            <span class="h-0.5 w-6 rounded-full bg-current transition-transform duration-300" :class="mobileMenuOpen && '-translate-y-1.75 -rotate-45'"></span>
         </button>
         </div>
     </nav>
 
-    <div x-cloak x-show="mobileMenuOpen" x-transition.origin.top class="border-t border-gray-100 px-4 pb-4 pt-2 lg:hidden">
+    <div x-cloak x-show="mobileMenuOpen" x-collapse.duration.300ms class="border-t border-gray-100 px-4 pb-4 pt-2 lg:hidden">
         <a href="#" class="block rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">
             Piepūšamās atrakcijas
         </a>
