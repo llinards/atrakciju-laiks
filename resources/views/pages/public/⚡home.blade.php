@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Faq;
 use App\Models\HeroSlide;
+use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -26,6 +29,15 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
         return $slides !== [] ? $slides : [
             ['src' => asset('images/hero-1.png'), 'alt' => 'Piepūšamā atrakcija zaļā pļavā'],
         ];
+    }
+
+    /**
+     * @return Collection<int, Faq>
+     */
+    #[Computed]
+    public function faqs(): Collection
+    {
+        return Faq::query()->visible()->ordered()->get();
     }
 };
 ?>
@@ -87,28 +99,22 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
         </div>
     </section>
 
-    <section class="px-4 py-16 lg:px-8">
-        <div class="mx-auto flex max-w-7xl flex-col gap-14">
-            <x-public.section-heading
-                subtitle="Atbildes uz jautājumiem, kas visbiežāk rodas par mūsu pakalpojumiem, rezervāciju un piegādi.">
-                Biežāk uzdotie jautājumi
-            </x-public.section-heading>
+    @if ($this->faqs->isNotEmpty())
+        <section class="px-4 py-16 lg:px-8">
+            <div class="mx-auto flex max-w-7xl flex-col gap-14">
+                <x-public.section-heading
+                    subtitle="Atbildes uz jautājumiem, kas visbiežāk rodas par mūsu pakalpojumiem, rezervāciju un piegādi.">
+                    Biežāk uzdotie jautājumi
+                </x-public.section-heading>
 
-            <div class="flex flex-col gap-5">
-                <x-public.faq-item question="Vai ir iespējama piegāde uz pasākuma vietu?">
-                    Jā, nodrošinām piegādi uz pasākuma norises vietu. Piegādes izmaksas un iespējas atkarīgas no
-                    atrašanās vietas un izvēlētā inventāra.
-                </x-public.faq-item>
-
-                <x-public.faq-item question="Vai ir iespējama saziņa ārpus darba laika?">
-                    Jā, sazinieties ar mums pa tālruni vai e-pastu, un mēs atbildēsim, tiklīdz tas būs iespējams.
-                </x-public.faq-item>
-
-                <x-public.faq-item question="Ko darīt, ja esmu rezervējis, bet mani plāni mainās?">
-                    Sazinieties ar mums pēc iespējas ātrāk, un mēs kopā atradīsim risinājumu - mainīsim rezervācijas
-                    datumu vai atcelsim to.
-                </x-public.faq-item>
+                <div class="flex flex-col gap-5">
+                    @foreach ($this->faqs as $faq)
+                        <x-public.faq-item :question="$faq->question" wire:key="faq-{{ $faq->id }}">
+                            {{ $faq->answer }}
+                        </x-public.faq-item>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 </div>

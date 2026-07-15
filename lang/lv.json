@@ -95,7 +95,7 @@
     "Duplicate :name": "Dublikāts: vārds",
     "e.g., MacBook Pro, iPhone": "e.g., MacBook Pro, iPhone",
     "Each recovery code can be used once to access your account and will be removed after use. If you need more, click Regenerate codes above.": "Katru atkopšanas kodu var izmantot vienreiz, lai piekļūtu savam kontam, un pēc lietošanas tas tiks noņemts. Ja jums ir nepieciešams vairāk, noklikšķiniet uz Atjaunot kodus.",
-    "Edit": "Rediģēt",
+    "Edit": "Labot",
     "Edit :name": "Edit :name",
     "Edit team": "Edit team",
     "Email": "E-pasts",
@@ -440,5 +440,18 @@
     "Maximum number of hero images reached. Delete one to upload a new image.": "Sasniegts maksimālais attēlu skaits. Dzēs kādu attēlu, lai augšupielādētu jaunu.",
     "images": "attēli",
     "image": "attēls",
-    "JPG, PNG, WEBP up to 400KB": "JPG, PNG, WEBP līdz 400KB"
+    "JPG, PNG, WEBP up to 400KB": "JPG, PNG, WEBP līdz 400KB",
+    "FAQ": "BUJ",
+    "Frequently asked questions on the home page. Hidden questions are not shown; the section disappears when no questions are visible.": "Biežāk uzdotie jautājumi sākumlapā. Paslēptie jautājumi netiek rādīti; ja neviens jautājums nav redzams, sadaļa tiek paslēpta.",
+    "Add question": "Pievienot jautājumu",
+    "Edit question": "Labot jautājumu",
+    "Question": "Jautājums",
+    "Answer": "Atbilde",
+    "Visible": "Redzams",
+    "Delete this question?": "Dzēst šo jautājumu?",
+    "Question saved.": "Jautājums saglabāts.",
+    "Question deleted.": "Jautājums dzēsts.",
+    "No questions yet - the FAQ section is hidden on the home page.": "Vēl nav jautājumu - BUJ sadaļa sākumlapā ir paslēpta.",
+    "question attribute": "jautājums",
+    "answer attribute": "atbilde"
 }

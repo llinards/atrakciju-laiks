@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\Faq;
+
 test('home page renders all sections', function () {
+    Faq::factory()->create(['question' => 'Vai ir iespējama piegāde?']);
+
     $response = $this->get(route('home'));
 
     $response->assertSuccessful();

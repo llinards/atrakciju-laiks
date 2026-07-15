@@ -23,6 +23,10 @@
                     <flux:sidebar.item icon="photo" :href="route('hero-slides.edit')" :current="request()->routeIs('hero-slides.edit')" wire:navigate>
                         {{ __('Hero images') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="question-mark-circle" :href="route('faqs.edit')" :current="request()->routeIs('faqs.edit')" wire:navigate>
+                        {{ __('FAQ') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
