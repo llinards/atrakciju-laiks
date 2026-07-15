@@ -62,3 +62,14 @@ jobs:
 
       - name: Run Tests
         run: php artisan test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    steps:
+      - name: Trigger Forge deployment
+        env:
+          FORGE_TRIGGER_URL: ${{ github.ref_name == 'main' && secrets.FORGE_TRIGGER_URL_PRODUCTION || secrets.FORGE_TRIGGER_URL_STAGING }}
+        run: curl --fail --silent --show-error --request POST "$FORGE_TRIGGER_URL"
