@@ -17,12 +17,15 @@ export default defineConfig({
             fonts: [
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
+                    subsets: ['latin', 'latin-ext'],
                 }),
                 bunny('Nunito Sans', {
                     weights: [600, 700, 800],
+                    subsets: ['latin', 'latin-ext'],
                 }),
                 bunny('Inter', {
                     weights: [400, 500, 600],
+                    subsets: ['latin', 'latin-ext'],
                 }),
             ],
         }),
