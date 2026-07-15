@@ -1,19 +1,37 @@
 <?php
 
+use App\Models\HeroSlide;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
-    //
+    /**
+     * Hero slides managed from the admin panel, with bundled defaults
+     * until at least one image has been uploaded.
+     *
+     * @return array<int, array{src: string, alt: string}>
+     */
+    public function heroSlides(): array
+    {
+        $slides = HeroSlide::query()
+            ->ordered()
+            ->get()
+            ->map(fn (HeroSlide $slide): array => [
+                'src' => $slide->url(),
+                'alt' => config('app.name'),
+            ])
+            ->all();
+
+        return $slides !== [] ? $slides : [
+            ['src' => asset('images/hero-1.png'), 'alt' => 'Piepūšamā atrakcija zaļā pļavā'],
+        ];
+    }
 };
 ?>
 
 <div>
-    <x-public.hero-slider :slides="[
-        ['src' => asset('images/hero-1.png'), 'alt' => 'Piepūšamā atrakcija zaļā pļavā'],
-        ['src' => asset('images/hero-2.png'), 'alt' => 'Minecraft piepūšamā atrakcija ar slidkalniņu'],
-    ]" />
+    <x-public.hero-slider :slides="$this->heroSlides()" />
 
     <section class="px-4 pb-16 pt-14 lg:px-8">
         <div class="mx-auto flex max-w-7xl flex-col gap-14">
@@ -46,7 +64,7 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
                     Prieks bez raizēm -<br>tā strādājam mēs
                 </h2>
 
-                <p class="font-heading text-xl font-semibold leading-[30px] text-gray-800">
+                <p class="font-heading text-xl font-semibold leading-7.5 text-gray-800">
                     Svētku plānošana ir rūpīgi pārdomāts un īpašs process - kādam tie var būt pat dzīves lielākie
                     svētki.
                     Tieši tāpēc Atrakciju Laiks ir radīts, lai palīdzētu šos mirkļus padarīt vēl priecīgākus, vieglākus

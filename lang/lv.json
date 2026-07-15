@@ -424,5 +424,21 @@
     "YouTube URL": "YouTube adrese",
     "Contact information shown across the public site": "Kontaktinformācija, kas tiek rādīta publiskajā vietnē",
     "Contact information": "Kontaktinformācija",
-    "Contact information updated.": "Kontaktinformācija saglabāta."
+    "Contact information updated.": "Kontaktinformācija saglabāta.",
+    "Hero images": "Sākumlapas attēli",
+    "Hero images updated.": "Sākumlapas attēli saglabāti.",
+    "Hero image deleted.": "Attēls dzēsts.",
+    "At least one hero image is required.": "Jābūt vismaz vienam sākumlapas attēlam.",
+    "You can have at most :max hero images in total.": "Kopā drīkst būt ne vairāk kā :max attēli.",
+    "Slider images at the top of the home page (up to :max)": "Slaidera attēli sākumlapas augšpusē (līdz :max)",
+    "Position :position": ":position. pozīcija",
+    "Add images": "Pievienot attēlus",
+    "Drop files here or click to browse": "Ievelc failus šeit vai klikšķini, lai izvēlētos",
+    "Delete this hero image?": "Dzēst šo attēlu?",
+    "Remove file": "Noņemt failu",
+    "No uploaded images yet - the built-in default images are shown on the home page.": "Vēl nav augšupielādētu attēlu - sākumlapā tiek rādīti noklusējuma attēli.",
+    "Maximum number of hero images reached. Delete one to upload a new image.": "Sasniegts maksimālais attēlu skaits. Dzēs kādu attēlu, lai augšupielādētu jaunu.",
+    "images": "attēli",
+    "image": "attēls",
+    "JPG, PNG, WEBP up to 400KB": "JPG, PNG, WEBP līdz 400KB"
 }

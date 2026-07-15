@@ -19,6 +19,10 @@
                     <flux:sidebar.item icon="phone" :href="route('site-settings.edit')" :current="request()->routeIs('site-settings.edit')" wire:navigate>
                         {{ __('Contact information') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="photo" :href="route('hero-slides.edit')" :current="request()->routeIs('hero-slides.edit')" wire:navigate>
+                        {{ __('Hero images') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
