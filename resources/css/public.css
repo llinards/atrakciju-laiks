@@ -1,0 +1,38 @@
+@import 'tailwindcss' source(none);
+
+@source '../views/layouts/public.blade.php';
+@source '../views/partials/public-head.blade.php';
+@source '../views/pages/public';
+@source '../views/components/public';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-heading: 'Nunito Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Figma: Gray/* (300/400 interpolated from the same ramp) */
+    --color-gray-50: #fafafa;
+    --color-gray-100: #f5f5f5;
+    --color-gray-200: #e9eaeb;
+    --color-gray-300: #d5d7da;
+    --color-gray-400: #a4a7ae;
+    --color-gray-500: #717680;
+    --color-gray-600: #535862;
+    --color-gray-700: #414651;
+    --color-gray-800: #252b37;
+    --color-gray-900: #181d27;
+
+    /* Figma: primary red (raw fill) and Brand/700 */
+    --color-brand: #d81f1e;
+    --color-brand-dark: #992311;
+
+    /* Figma: Success/100 teal and CTA yellow (raw fill) */
+    --color-splash: #11caf0;
+    --color-sun: #ffac0e;
+
+    /* Figma: page background */
+    --color-cream: #fffcf8;
+}
+
+[x-cloak] {
+    display: none !important;
+}

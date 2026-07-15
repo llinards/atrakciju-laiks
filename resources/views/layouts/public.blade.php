@@ -2,19 +2,21 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-    @include('partials.head')
+    @include('partials.public-head')
 </head>
 
-<body>
-    <flux:main>
+<body class="min-h-screen bg-cream font-sans text-gray-900 antialiased">
+    <x-public.header />
+
+    <main>
         {{ $slot }}
-    </flux:main>
-    @persist('toast')
-        <flux:toast.group>
-            <flux:toast />
-        </flux:toast.group>
-    @endpersist
-    @fluxScripts
+    </main>
+
+    <x-public.footer />
+    <x-public.floating-contacts />
+    <x-public.scroll-top />
+
+    @livewireScripts
 </body>
 
 </html>
