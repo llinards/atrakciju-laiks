@@ -7,7 +7,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('FAQ')] class extends Component {
+new #[Title('BUJ')] class extends Component {
     public ?int $editingId = null;
 
     public string $question = '';

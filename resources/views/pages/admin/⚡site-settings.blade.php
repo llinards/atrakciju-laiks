@@ -5,7 +5,7 @@ use Flux\Flux;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Contact information')] class extends Component {
+new #[Title('Kontaktinformācija')] class extends Component {
     public string $phone = '';
     public string $email = '';
     public string $address = '';
