@@ -18,8 +18,8 @@
 >
     <div class="flex min-h-[34px] items-center justify-center bg-brand px-4 py-1 text-center">
         <p class="text-sm font-semibold text-white">
-            Mēs piegādāsim atrakciju Jums ērtā vietā un laikā visā Latvijā |
-            <a href="tel:{{ str_replace(' ', '', config('site.phone')) }}" class="underline underline-offset-2 hover:text-gray-100">{{ config('site.phone') }}</a>
+            Mēs piegādāsim atrakciju Jums ērtā vietā un laikā visā Latvijā<span class="hidden sm:inline"> |</span>
+            <a href="tel:{{ str_replace(' ', '', config('site.phone')) }}" class="block whitespace-nowrap underline underline-offset-2 hover:text-gray-100 sm:inline">{{ config('site.phone') }}</a>
         </p>
     </div>
 
