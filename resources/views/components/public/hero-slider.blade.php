@@ -29,7 +29,7 @@
     @mouseenter="pause()"
     @mouseleave="play()"
 >
-    <div class="relative h-[320px] w-full md:h-[440px] lg:h-[558px]">
+    <div class="relative h-[320px] w-full md:h-[440px] lg:h-[clamp(558px,65vh,820px)]">
         @foreach ($slides as $slide)
             <img
                 src="{{ $slide['src'] }}"
