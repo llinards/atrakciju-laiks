@@ -23,10 +23,12 @@
         </p>
     </div>
 
-    <nav class="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 lg:px-8">
-        <a href="{{ route('home') }}" wire:navigate class="shrink-0">
-            <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-14 w-auto">
-        </a>
+    <nav class="flex h-20 items-center px-4 lg:px-8">
+        <div class="flex flex-1 justify-start lg:justify-center">
+            <a href="{{ route('home') }}" wire:navigate class="shrink-0">
+                <img src="{{ asset('images/logo.png') }}" alt="{{ config('app.name') }}" class="h-14 w-auto">
+            </a>
+        </div>
 
         <div class="hidden items-center gap-1 lg:flex">
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
@@ -61,6 +63,7 @@
             @endforeach
         </div>
 
+        <div class="flex flex-1 justify-end">
         <button
             type="button"
             class="rounded-xl p-2 text-gray-600 hover:bg-gray-50 lg:hidden"
@@ -75,6 +78,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
         </button>
+        </div>
     </nav>
 
     <div x-cloak x-show="mobileMenuOpen" x-transition.origin.top class="border-t border-gray-100 px-4 pb-4 pt-2 lg:hidden">
