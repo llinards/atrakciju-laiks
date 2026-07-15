@@ -57,9 +57,15 @@
         </div>
     </div>
 
-    <div class="px-4 pb-8">
+    <div class="flex flex-col items-center gap-2 px-4 pb-8">
         <p class="text-center text-gray-900/50">
             Visas tiesības rezervētas. ©{{ date('Y') }} atrakcijulaiks.lv
+        </p>
+        <p class="text-center text-sm text-gray-900/50">
+            Dizains:
+            <a href="https://simpledesign.lv" target="_blank" rel="noopener" class="underline underline-offset-2 transition-colors hover:text-gray-900">SIMPLE DESIGN</a>
+            | Izstrādāja:
+            <a href="https://slmedia.lv" target="_blank" rel="noopener" class="underline underline-offset-2 transition-colors hover:text-gray-900">S&amp;L MEDIA</a>
         </p>
     </div>
 </footer>
