@@ -22,7 +22,7 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
                 Ko vēlies nomāt šodien?
             </x-public.section-heading>
 
-            <div class="flex flex-wrap justify-center gap-10">
+            <x-public.card-carousel class="-mx-4 lg:mx-0">
                 <x-public.category-card color="splash" title="Piepūšamās atrakcijas"
                     description="Jautrībai, kustībai un bērnu priekam" href="#" :image="asset('images/category-atrakcijas.png')"
                     image-alt="Piepūšamā atrakcija" />
@@ -32,7 +32,7 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
                 <x-public.category-card color="sun" title="Nojumes"
                     description="Praktisks risinājums svinībām un pasākumiem ārā" href="#" :image="asset('images/category-nojumes.png')"
                     image-alt="Nojume" />
-            </div>
+            </x-public.card-carousel>
         </div>
     </section>
 

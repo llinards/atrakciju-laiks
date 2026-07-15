@@ -15,10 +15,10 @@
     };
 @endphp
 
-<div {{ $attributes->merge(['class' => "relative flex h-[219px] w-full max-w-[394px] overflow-clip rounded-[22px] p-[30px] {$background}"]) }}>
+<div {{ $attributes->merge(['class' => "relative flex min-h-[219px] w-full max-w-[394px] overflow-clip rounded-[22px] p-[30px] lg:h-[219px] {$background}"]) }}>
     <img src="{{ asset('images/pattern-1.svg') }}" alt="" aria-hidden="true" class="pointer-events-none absolute -left-14 -top-16 h-[354px] w-[450px] max-w-none opacity-8">
 
-    <div class="relative z-10 flex w-[177px] shrink-0 flex-col items-start justify-between">
+    <div class="relative z-10 flex w-full flex-col items-center gap-5 py-4 text-center lg:w-[177px] lg:shrink-0 lg:items-start lg:justify-between lg:gap-0 lg:py-0 lg:text-left">
         <h3 class="font-heading text-3xl font-bold leading-none tracking-tight text-white">
             {{ $title }}
         </h3>
@@ -36,6 +36,6 @@
     </div>
 
     @if ($image)
-        <img src="{{ $image }}" alt="{{ $imageAlt }}" class="absolute right-0 top-1/2 h-[90%] w-[55%] -translate-y-1/2 object-contain">
+        <img src="{{ $image }}" alt="{{ $imageAlt }}" class="absolute right-0 top-1/2 hidden h-[90%] w-[45%] -translate-y-1/2 object-contain lg:block">
     @endif
 </div>
