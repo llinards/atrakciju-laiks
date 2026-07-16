@@ -9,7 +9,7 @@
             ->all(),
         ['label' => 'Galerija', 'href' => '#'],
         ['label' => 'Pārdošanas sadaļa', 'href' => '#'],
-        ['label' => 'Kontakti', 'href' => '#'],
+        ['label' => 'Kontakti', 'href' => route('contact')],
     ];
 @endphp
 

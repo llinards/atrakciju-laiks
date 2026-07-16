@@ -5,7 +5,7 @@
     $navigationItems = [
         ['label' => 'Pārdošanas sadaļa', 'href' => '#'],
         ['label' => 'Galerija', 'href' => '#'],
-        ['label' => 'Kontakti', 'href' => '#'],
+        ['label' => 'Kontakti', 'href' => route('contact')],
     ];
 @endphp
 
