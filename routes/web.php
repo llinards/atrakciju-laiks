@@ -7,7 +7,7 @@ Route::livewire('/', 'pages::public.home')->name('home');
 Route::livewire('/kontakti', 'pages::public.contact')->name('contact');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::livewire('dashboard', 'pages::admin.dashboard')->name('dashboard');
 
     Route::livewire('site-settings', 'pages::admin.site-settings')->name('site-settings.edit');
 
