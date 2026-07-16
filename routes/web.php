@@ -26,6 +26,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 
+// Products flagged for sale, across all categories. Registered before the
+// wildcards so "pardosana" wins over category slugs (and becomes a reserved
+// path via NotReservedPath automatically).
+Route::livewire('/pardosana', 'pages::public.sale')->name('sale.index');
+
+// Product slugs are only unique per category, so this root-level binding
+// resolves the first global slug match; the page 404s unless that product
+// is actually for sale.
+Route::livewire('/pardosana/{product:slug}', 'pages::public.product')->name('sale.show');
+
 // Products are scoped to their category, so a product slug under the wrong
 // category slug returns a 404.
 Route::livewire('/{category:slug}/{product:slug}', 'pages::public.product')

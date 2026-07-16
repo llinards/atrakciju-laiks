@@ -159,6 +159,9 @@ new #[Title('Produkti')] class extends Component {
                                 @if ($product->is_new)
                                     <flux:badge size="sm" color="amber">JAUNUMS!</flux:badge>
                                 @endif
+                                @if ($product->is_for_sale)
+                                    <flux:badge size="sm" color="green">Pārdošanā</flux:badge>
+                                @endif
                             </div>
                         </flux:table.cell>
                         <flux:table.cell>{{ $product->category->title }}</flux:table.cell>

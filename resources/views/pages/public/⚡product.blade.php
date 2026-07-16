@@ -10,13 +10,28 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 new #[Layout('layouts::public')] class extends Component {
-    public Category $category;
+    public ?Category $category = null;
 
     public Product $product;
 
     public function mount(): void
     {
+        if ($this->category === null) {
+            abort_unless($this->product->is_visible && $this->product->is_for_sale, 404);
+
+            return;
+        }
+
         abort_unless($this->category->is_visible && $this->product->is_visible, 404);
+    }
+
+    /**
+     * The sale route (/pardosana/{product}) has no category segment, so a
+     * missing category is what puts the page into sale mode.
+     */
+    public function isSale(): bool
+    {
+        return $this->category === null;
     }
 
     public function rendering(View $view): void
@@ -53,6 +68,16 @@ new #[Layout('layouts::public')] class extends Component {
     #[Computed]
     public function relatedProducts(): Collection
     {
+        if ($this->category === null) {
+            return Product::query()
+                ->visible()
+                ->forSale()
+                ->whereKeyNot($this->product->getKey())
+                ->ordered()
+                ->limit(8)
+                ->get();
+        }
+
         return $this->category
             ->products()
             ->visible()
@@ -79,7 +104,8 @@ new #[Layout('layouts::public')] class extends Component {
 
     public function hasRentalTab(): bool
     {
-        return $this->product->rental_prices !== null || $this->rentalTermsHtml() !== null;
+        return ! $this->isSale()
+            && ($this->product->rental_prices !== null || $this->rentalTermsHtml() !== null);
     }
 
     /**
@@ -106,7 +132,7 @@ new #[Layout('layouts::public')] class extends Component {
 
 <div class="px-4 pb-16 pt-8 lg:px-8">
     <div class="mx-auto flex max-w-7xl flex-col gap-8">
-        <a href="{{ route('category.show', $category) }}" wire:navigate
+        <a href="{{ $this->isSale() ? route('sale.index') : route('category.show', $category) }}" wire:navigate
             class="inline-flex w-fit items-center gap-2 font-heading text-lg font-semibold text-gray-700 transition-colors hover:text-brand">
             <x-public.icons.arrow-left class="size-5" />
             Atpakaļ
@@ -114,7 +140,7 @@ new #[Layout('layouts::public')] class extends Component {
 
         <div class="grid gap-6 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-12">
             <div class="flex flex-col gap-2 lg:col-start-2 lg:row-start-1">
-                @if ($product->is_new)
+                @if (! $this->isSale() && $product->is_new)
                     <span class="w-fit rounded-full bg-brand px-3 py-1.5 text-sm font-semibold text-white shadow-xs">
                         JAUNUMS!
                     </span>
@@ -126,10 +152,14 @@ new #[Layout('layouts::public')] class extends Component {
 
                 <p
                     class="flex flex-wrap items-center gap-x-3 gap-y-1 font-heading text-3xl font-bold leading-tight tracking-tight text-brand">
-                    Nomas cena no {{ $product->formattedPrice() }}
+                    @if ($this->isSale())
+                        Pārdošanas cena: {{ $product->formattedSalePrice() }}
+                    @else
+                        Nomas cena no {{ $product->formattedPrice() }}
 
-                    @if ($product->formattedOriginalPrice())
-                        <span class="text-2xl text-gray-400 line-through">{{ $product->formattedOriginalPrice() }}</span>
+                        @if ($product->formattedOriginalPrice())
+                            <span class="text-2xl text-gray-400 line-through">{{ $product->formattedOriginalPrice() }}</span>
+                        @endif
                     @endif
                 </p>
             </div>
@@ -147,14 +177,16 @@ new #[Layout('layouts::public')] class extends Component {
 
                 @if ($product->included_items !== null)
                     <div class="flex flex-col gap-3">
-                        <h2 class="font-heading text-lg font-bold text-gray-900">Nomas komplektā iekļauts:</h2>
+                        <h2 class="font-heading text-lg font-bold text-gray-900">
+                            {{ $this->isSale() ? 'Komplektā iekļauts:' : 'Nomas komplektā iekļauts:' }}
+                        </h2>
 
                         <x-public.check-list :items="$product->included_items" />
                     </div>
                 @endif
 
                 <x-public.button variant="sun" class="w-full" x-data @click="$dispatch('open-reserve-modal')">
-                    Rezervēt
+                    {{ $this->isSale() ? 'Sazināties' : 'Rezervēt' }}
                 </x-public.button>
             </div>
         </div>
@@ -235,14 +267,21 @@ new #[Layout('layouts::public')] class extends Component {
         @if ($this->relatedProducts->isNotEmpty())
             <section class="flex flex-col gap-8 pt-8">
                 <x-public.section-heading align="left">
-                    Citas piepūšamās atrakcijas
+                    {{ $this->isSale() ? 'Citi produkti pārdošanā' : 'Citas piepūšamās atrakcijas' }}
                 </x-public.section-heading>
 
                 <x-public.arrow-carousel class="-mx-4 lg:mx-0">
                     @foreach ($this->relatedProducts as $related)
-                        <x-public.product-card wire:key="related-{{ $related->id }}" :name="$related->name"
-                            :price="$related->formattedPrice()" :original-price="$related->formattedOriginalPrice()" :discount-percent="$related->discountPercent()" :is-new="$related->is_new" :image="$related->url()"
-                            :image-alt="$related->name" :href="route('product.show', [$category, $related])" />
+                        @if ($this->isSale())
+                            <x-public.product-card wire:key="related-{{ $related->id }}" :name="$related->name"
+                                price-label="Pārdošanas cena:" :price="$related->formattedSalePrice()"
+                                cta-label="Sazināties" :image="$related->url()" :image-alt="$related->name"
+                                :href="route('sale.show', $related)" />
+                        @else
+                            <x-public.product-card wire:key="related-{{ $related->id }}" :name="$related->name"
+                                :price="$related->formattedPrice()" :original-price="$related->formattedOriginalPrice()" :discount-percent="$related->discountPercent()" :is-new="$related->is_new" :image="$related->url()"
+                                :image-alt="$related->name" :href="route('product.show', [$category, $related])" />
+                        @endif
                     @endforeach
                 </x-public.arrow-carousel>
             </section>

@@ -46,6 +46,8 @@ test('a product can be created and redirects to its edit page', function () {
         ->discount_price->toBeNull()
         ->size->toBeNull()
         ->is_new->toBeFalse()
+        ->is_for_sale->toBeFalse()
+        ->sale_price->toBeNull()
         ->description->toBeNull()
         ->specs->toBeNull()
         ->rental_prices->toBeNull()
@@ -160,6 +162,8 @@ test('the edit page hydrates all fields from the product', function () {
         'price' => 70,
         'size' => ProductSize::Large,
         'is_new' => true,
+        'is_for_sale' => true,
+        'sale_price' => 450,
         'description' => "Pirmā rindkopa.\n\nOtrā rindkopa.",
         'specs' => ['Izmēri' => '16 m x 16 m'],
         'rental_prices' => ['Pirmdiena–ceturtdiena' => '70€'],
@@ -171,6 +175,8 @@ test('the edit page hydrates all fields from the product', function () {
         ->assertSet('name', 'Krāsaina zvaigzne')
         ->assertSet('size', 'large')
         ->assertSet('isNew', true)
+        ->assertSet('isForSale', true)
+        ->assertSet('salePrice', '450.00')
         ->assertSet('description', '<p>Pirmā rindkopa.</p><p>Otrā rindkopa.</p>')
         ->assertSet('rentalTerms', '<p>Viena nomas diena.</p>')
         ->assertSet('specs', [['label' => 'Izmēri', 'value' => '16 m x 16 m']])
@@ -222,6 +228,56 @@ test('the discount price must be lower than the standard price', function (strin
         ->call('save')
         ->assertHasErrors(['discountPrice']);
 })->with(['equal' => '100', 'higher' => '110']);
+
+test('a product can be marked for sale with a sale price', function () {
+    $this->actingAs(User::factory()->create());
+
+    $category = Category::factory()->create();
+
+    Livewire::test('pages::admin.product-form')
+        ->set('categoryId', (string) $category->id)
+        ->set('name', 'Pārdodamais produkts')
+        ->set('price', '130')
+        ->set('isForSale', true)
+        ->set('salePrice', '450')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(Product::query()->sole())
+        ->is_for_sale->toBeTrue()
+        ->sale_price->toBe('450.00');
+});
+
+test('a sale price is required and must be valid when the product is for sale', function (?string $salePrice) {
+    $this->actingAs(User::factory()->create());
+
+    $category = Category::factory()->create();
+
+    Livewire::test('pages::admin.product-form')
+        ->set('categoryId', (string) $category->id)
+        ->set('name', 'Produkts')
+        ->set('price', '100')
+        ->set('isForSale', true)
+        ->set('salePrice', $salePrice)
+        ->call('save')
+        ->assertHasErrors(['salePrice']);
+})->with(['missing' => '', 'not a number' => 'abc', 'too many decimals' => '12.345']);
+
+test('unchecking available for sale clears the stored sale price', function () {
+    $this->actingAs(User::factory()->create());
+
+    $product = Product::factory()->forSale()->create();
+
+    Livewire::test('pages::admin.product-form', ['product' => $product])
+        ->assertSet('isForSale', true)
+        ->set('isForSale', false)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($product->refresh())
+        ->is_for_sale->toBeFalse()
+        ->sale_price->toBeNull();
+});
 
 test('the size is optional and an invalid size is rejected', function () {
     $this->actingAs(User::factory()->create());

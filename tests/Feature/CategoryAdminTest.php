@@ -123,6 +123,7 @@ test('titles colliding with reserved paths get a suffixed slug', function (strin
 })->with([
     'route path' => ['Dashboard', 'dashboard-2'],
     'admin path' => ['Categories', 'categories-2'],
+    'sale route path' => ['Pardosana', 'pardosana-2'],
     'static reserved path' => ['Livewire', 'livewire-2'],
 ]);
 

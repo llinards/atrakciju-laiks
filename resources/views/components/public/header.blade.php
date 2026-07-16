@@ -3,7 +3,7 @@
     $categories = \App\Models\Category::navigation();
 
     $navigationItems = [
-        ['label' => 'Pārdošanas sadaļa', 'href' => '#'],
+        ['label' => 'Pārdošanas sadaļa', 'href' => route('sale.index')],
         ['label' => 'Galerija', 'href' => '#'],
         ['label' => 'Kontakti', 'href' => route('contact')],
     ];

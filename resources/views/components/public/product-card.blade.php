@@ -1,6 +1,8 @@
 @props([
     'name',
     'price',
+    'priceLabel' => 'Cena nomai no',
+    'ctaLabel' => 'Rezervēt',
     'originalPrice' => null,
     'discountPercent' => null,
     'isNew' => false,
@@ -37,7 +39,7 @@
         </h3>
 
         <p class="flex flex-wrap items-center gap-x-3 gap-y-1 font-heading text-2xl font-bold leading-tight tracking-tight text-brand">
-            Cena nomai no {{ $price }}
+            {{ $priceLabel }} {{ $price }}
 
             @if ($originalPrice)
                 <span class="text-xl text-gray-400 line-through">{{ $originalPrice }}</span>
@@ -45,7 +47,7 @@
         </p>
 
         <x-public.button variant="sun" :href="$href" class="mt-3 w-full" :wire:navigate="$href !== '#'">
-            Rezervēt
+            {{ $ctaLabel }}
         </x-public.button>
     </div>
 </article>

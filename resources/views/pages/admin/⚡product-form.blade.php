@@ -33,6 +33,10 @@ new #[Title('Produkts')] class extends Component {
 
     public bool $isNew = false;
 
+    public bool $isForSale = false;
+
+    public ?string $salePrice = null;
+
     public string $description = '';
 
     public string $rentalTerms = '';
@@ -73,6 +77,8 @@ new #[Title('Produkts')] class extends Component {
         $this->discountPrice = $product->discount_price;
         $this->size = $product->size?->value;
         $this->isNew = $product->is_new;
+        $this->isForSale = $product->is_for_sale;
+        $this->salePrice = $product->sale_price;
         $this->description = $this->toEditorHtml($product->description);
         $this->rentalTerms = $this->toEditorHtml($product->rental_terms);
         $this->specs = $this->toPairRows($product->specs);
@@ -142,6 +148,7 @@ new #[Title('Produkts')] class extends Component {
     {
         // Livewire inputs submit '' instead of null; nullable rules only skip real null.
         $this->discountPrice = $this->discountPrice === '' ? null : $this->discountPrice;
+        $this->salePrice = $this->salePrice === '' ? null : $this->salePrice;
         $this->size = $this->size === '' ? null : $this->size;
 
         $validated = $this->validate(
@@ -152,6 +159,8 @@ new #[Title('Produkts')] class extends Component {
                 'discountPrice' => ['nullable', 'numeric', 'decimal:0,2', 'lt:price', 'min:0'],
                 'size' => ['nullable', Rule::enum(ProductSize::class)],
                 'isNew' => ['boolean'],
+                'isForSale' => ['boolean'],
+                'salePrice' => ['nullable', 'required_if_accepted:isForSale', 'numeric', 'decimal:0,2', 'min:0', 'max:999999.99'],
                 'description' => ['nullable', 'string'],
                 'rentalTerms' => ['nullable', 'string'],
                 'specs' => ['array'],
@@ -166,12 +175,14 @@ new #[Title('Produkts')] class extends Component {
             ],
             messages: [
                 'discountPrice.lt' => __('The discount price must be lower than the standard price.'),
+                'salePrice.required_if_accepted' => __('Set a sale price when the product is available for sale.'),
             ],
             attributes: [
                 'categoryId' => __('category attribute'),
                 'name' => __('name attribute'),
                 'price' => __('price attribute'),
                 'discountPrice' => __('discount price attribute'),
+                'salePrice' => __('sale price attribute'),
                 'size' => __('size attribute'),
                 'image' => __('image attribute'),
                 'specs.*.label' => __('label attribute'),
@@ -198,6 +209,8 @@ new #[Title('Produkts')] class extends Component {
             'discount_price' => $validated['discountPrice'],
             'size' => $validated['size'],
             'is_new' => $validated['isNew'],
+            'is_for_sale' => $validated['isForSale'],
+            'sale_price' => $validated['isForSale'] ? $validated['salePrice'] : null,
             'description' => $this->normalizeRichText($validated['description']),
             'rental_terms' => $this->normalizeRichText($validated['rentalTerms']),
             'specs' => $this->normalizePairs($validated['specs']),
@@ -444,6 +457,13 @@ new #[Title('Produkts')] class extends Component {
 
             <flux:checkbox wire:model="isNew" :label="__('New product')"
                 :description="__('Shows a JAUNUMS! badge on the public site — no need to put it in the name.')" />
+
+            <flux:checkbox wire:model="isForSale" :label="__('Available for sale')"
+                :description="__('Also lists the product in the Pārdošanas sadaļa with a one-time purchase price. It stays in its rental category as usual.')" />
+
+            <div x-cloak x-show="$wire.isForSale">
+                <flux:input wire:model="salePrice" :label="__('Sale price (EUR)')" type="number" step="0.01" min="0" />
+            </div>
 
             <x-admin.image-field :image="$image" :existing-image-url="$existingImageUrl"
                 :remove-action="$product?->path ? 'removeImage' : null" />

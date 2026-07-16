@@ -25,6 +25,7 @@ class ProductFactory extends Factory
             'price' => $this->faker->randomFloat(2, 20, 300),
             'size' => null,
             'is_new' => false,
+            'is_for_sale' => false,
             'is_visible' => true,
             'position' => $this->faker->numberBetween(0, 10),
         ];
@@ -44,6 +45,14 @@ class ProductFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'discount_price' => round($attributes['price'] * 0.8, 2),
+        ]);
+    }
+
+    public function forSale(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_for_sale' => true,
+            'sale_price' => round($attributes['price'] * 4, 2),
         ]);
     }
 

@@ -32,11 +32,13 @@ class Product extends Model
         return [
             'price' => 'decimal:2',
             'discount_price' => 'decimal:2',
+            'sale_price' => 'decimal:2',
             'size' => ProductSize::class,
             'specs' => 'array',
             'rental_prices' => 'array',
             'included_items' => 'array',
             'is_new' => 'boolean',
+            'is_for_sale' => 'boolean',
             'is_visible' => 'boolean',
         ];
     }
@@ -132,6 +134,15 @@ class Product extends Model
         $query->whereNotNull('size');
     }
 
+    /**
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function forSale(Builder $query): void
+    {
+        $query->where('is_for_sale', true);
+    }
+
     public function url(): ?string
     {
         return $this->path ? Storage::disk('public')->url($this->path) : null;
@@ -175,5 +186,14 @@ class Product extends Model
     public function hasDiscount(): bool
     {
         return $this->discount_price !== null && (float) $this->discount_price < (float) $this->price;
+    }
+
+    /**
+     * The one-time purchase price for products available for sale. Admin
+     * validation guarantees a sale price is set whenever is_for_sale is true.
+     */
+    public function formattedSalePrice(): string
+    {
+        return Number::format((float) $this->sale_price, maxPrecision: 2).'€';
     }
 }
