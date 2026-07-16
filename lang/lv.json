@@ -528,5 +528,7 @@
     "Images added.": "Attēli pievienoti.",
     "Image deleted.": "Attēls dzēsts.",
     "Delete this image?": "Dzēst šo attēlu?",
-    "Remove image": "Noņemt attēlu"
+    "Remove image": "Noņemt attēlu",
+    "Remove this image?": "Noņemt šo attēlu?",
+    "Unsaved changes": "Nesaglabātas izmaiņas"
 }

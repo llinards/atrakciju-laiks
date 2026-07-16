@@ -53,6 +53,8 @@ new #[Title('Produkts')] class extends Component {
     /** @var array<int, TemporaryUploadedFile> */
     public array $galleryUploads = [];
 
+    public bool $hasUnsavedChanges = false;
+
     public function mount(?Product $product = null): void
     {
         $this->product = $product;
@@ -98,6 +100,18 @@ new #[Title('Produkts')] class extends Component {
     }
 
     /**
+     * Any synced form change means the product differs from what is stored
+     * until save() runs. Gallery uploads are excluded — they persist through
+     * their own action.
+     */
+    public function updated(string $property): void
+    {
+        if (! str_starts_with($property, 'galleryUploads')) {
+            $this->hasUnsavedChanges = true;
+        }
+    }
+
+    /**
      * Append an empty row to one of the repeater fields.
      */
     public function addRow(string $field): void
@@ -105,6 +119,7 @@ new #[Title('Produkts')] class extends Component {
         abort_unless(in_array($field, ['specs', 'rentalPrices', 'includedItems'], true), 400);
 
         $this->{$field}[] = in_array($field, ['specs', 'rentalPrices'], true) ? ['label' => '', 'value' => ''] : '';
+        $this->hasUnsavedChanges = true;
     }
 
     /**
@@ -116,6 +131,7 @@ new #[Title('Produkts')] class extends Component {
 
         unset($this->{$field}[$index]);
         $this->{$field} = array_values($this->{$field});
+        $this->hasUnsavedChanges = true;
     }
 
     /**
@@ -191,11 +207,14 @@ new #[Title('Produkts')] class extends Component {
             'position' => $this->product?->position ?? (int) Product::query()->max('position') + 1,
         ];
 
+        $this->hasUnsavedChanges = false;
+
         if ($this->product !== null) {
             $this->product->update($data);
             $this->existingImageUrl = $this->product->url();
             $this->image = null;
 
+            $this->dispatch('product-saved');
             Flux::toast(variant: 'success', text: __('Product saved.'));
 
             return;
@@ -384,7 +403,11 @@ new #[Title('Produkts')] class extends Component {
         </div>
     </div>
 
-    <form wire:submit="save" class="space-y-8">
+    {{-- `dirty` tracks edits the server has not seen yet (any input/change in
+         the form); the server-side hasUnsavedChanges flag covers changes that
+         synced through an action without being persisted. --}}
+    <form wire:submit="save" class="space-y-8" x-data="{ dirty: false }" @input="dirty = true"
+        @change="dirty = true" @product-saved.window="dirty = false">
         <div class="space-y-6">
             <flux:heading size="lg" level="2">{{ __('Basic information') }}</flux:heading>
 
@@ -422,13 +445,8 @@ new #[Title('Produkts')] class extends Component {
             <flux:checkbox wire:model="isNew" :label="__('New product')"
                 :description="__('Shows a JAUNUMS! badge on the public site — no need to put it in the name.')" />
 
-            <x-admin.image-field :image="$image" :existing-image-url="$existingImageUrl" />
-
-            @if ($existingImageUrl && $product?->path)
-                <flux:button size="sm" variant="ghost" icon="trash" wire:click="removeImage">
-                    {{ __('Remove image') }}
-                </flux:button>
-            @endif
+            <x-admin.image-field :image="$image" :existing-image-url="$existingImageUrl"
+                :remove-action="$product?->path ? 'removeImage' : null" />
         </div>
 
         <flux:separator variant="subtle" />
@@ -525,7 +543,16 @@ new #[Title('Produkts')] class extends Component {
                 toolbar="bold italic underline | bullet ordered | link | undo redo" />
         </div>
 
-        <div class="flex justify-end gap-2">
+        {{-- Sticks to the viewport bottom while the form is in view, so the
+             save action never scrolls out of reach on this long page. --}}
+        <div
+            class="sticky bottom-0 z-10 -mx-4 flex items-center justify-end gap-2 border-t border-zinc-200 bg-white/95 px-4 py-4 backdrop-blur-sm dark:border-white/10 dark:bg-zinc-800/95">
+            <flux:badge color="amber" size="sm" x-cloak x-show="dirty || $wire.hasUnsavedChanges">
+                {{ __('Unsaved changes') }}
+            </flux:badge>
+
+            <flux:spacer />
+
             <flux:button variant="ghost" :href="route('products.index')" wire:navigate>
                 {{ __('Cancel') }}
             </flux:button>

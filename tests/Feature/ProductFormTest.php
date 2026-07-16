@@ -113,6 +113,33 @@ test('a spec value without a label is rejected', function () {
         ->assertHasErrors(['specs.0.label']);
 });
 
+test('the unsaved changes flag follows edits and clears on save', function () {
+    $this->actingAs(User::factory()->create());
+
+    $product = Product::factory()->create();
+
+    Livewire::test('pages::admin.product-form', ['product' => $product])
+        ->assertSet('hasUnsavedChanges', false)
+        ->set('name', 'Jauns nosaukums')
+        ->assertSet('hasUnsavedChanges', true)
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertSet('hasUnsavedChanges', false)
+        ->call('addRow', 'specs')
+        ->assertSet('hasUnsavedChanges', true);
+});
+
+test('gallery uploads do not mark the form as unsaved', function () {
+    Storage::fake('public');
+    $this->actingAs(User::factory()->create());
+
+    $product = Product::factory()->create();
+
+    Livewire::test('pages::admin.product-form', ['product' => $product])
+        ->set('galleryUploads', [UploadedFile::fake()->image('foto.jpg')])
+        ->assertSet('hasUnsavedChanges', false);
+});
+
 test('repeater rows can be added and removed', function () {
     $this->actingAs(User::factory()->create());
 
