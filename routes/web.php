@@ -15,3 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+
+// Root-level category slugs — must stay the LAST registered route so
+// every explicitly defined path above wins over the wildcard.
+Route::livewire('/{category:slug}', 'pages::public.category')->name('category.show');

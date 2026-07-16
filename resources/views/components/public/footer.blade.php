@@ -1,8 +1,9 @@
 @php
+    // Category slugs are seeded/managed in admin — keep these in sync with the categories table.
     $menuItems = [
-        ['label' => 'Piepūšamās atrakcijas', 'href' => '#'],
-        ['label' => 'Teltis', 'href' => '#'],
-        ['label' => 'Nojumes', 'href' => '#'],
+        ['label' => 'Piepūšamās atrakcijas', 'href' => route('category.show', 'piepusamas-atrakcijas')],
+        ['label' => 'Teltis', 'href' => route('category.show', 'teltis')],
+        ['label' => 'Nojumes', 'href' => route('category.show', 'nojumes')],
         ['label' => 'Galerija', 'href' => '#'],
         ['label' => 'Pārdošanas sadaļa', 'href' => '#'],
         ['label' => 'Kontakti', 'href' => '#'],
@@ -37,7 +38,7 @@
         <nav class="flex flex-col gap-1" aria-label="Kājenes izvēlne">
             <p class="mb-2 font-heading text-lg font-bold text-gray-900">Izvēlne</p>
             @foreach ($menuItems as $item)
-                <a href="{{ $item['href'] }}" class="text-[17px] leading-[30px] text-gray-900/50 transition-colors hover:text-gray-900">
+                <a href="{{ $item['href'] }}" @if ($item['href'] !== '#') wire:navigate @endif class="text-[17px] leading-[30px] text-gray-900/50 transition-colors hover:text-gray-900">
                     {{ $item['label'] }}
                 </a>
             @endforeach

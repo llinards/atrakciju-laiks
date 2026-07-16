@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Linards Lazdiņš',
             'email' => 'linards@slmedia.lv',
         ]);
+
+        $this->call(CategorySeeder::class);
     }
 }

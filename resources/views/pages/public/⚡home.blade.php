@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Faq;
 use App\Models\HeroSlide;
 use Illuminate\Database\Eloquent\Collection;
@@ -32,6 +33,15 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
     }
 
     /**
+     * @return Collection<int, Category>
+     */
+    #[Computed]
+    public function categories(): Collection
+    {
+        return Category::query()->visible()->ordered()->get();
+    }
+
+    /**
      * @return Collection<int, Faq>
      */
     #[Computed]
@@ -45,26 +55,24 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
 <div>
     <x-public.hero-slider :slides="$this->heroSlides()" />
 
-    <section class="px-4 pb-16 pt-14 lg:px-8">
-        <div class="mx-auto flex max-w-7xl flex-col gap-14">
-            <x-public.section-heading
-                subtitle="Izvēlies sev piemērotāko kategoriju bērnu ballītēm, pasākumiem un svinībām.">
-                Ko vēlies nomāt šodien?
-            </x-public.section-heading>
+    @if ($this->categories->isNotEmpty())
+        <section class="px-4 pb-16 pt-14 lg:px-8">
+            <div class="mx-auto flex max-w-7xl flex-col gap-14">
+                <x-public.section-heading
+                    subtitle="Izvēlies sev piemērotāko kategoriju bērnu ballītēm, pasākumiem un svinībām.">
+                    Ko vēlies nomāt šodien?
+                </x-public.section-heading>
 
-            <x-public.card-carousel class="-mx-4 lg:mx-0">
-                <x-public.category-card color="splash" title="Piepūšamās atrakcijas"
-                    description="Jautrībai, kustībai un bērnu priekam" href="#" :image="asset('images/category-atrakcijas.png')"
-                    image-alt="Piepūšamā atrakcija" />
-                <x-public.category-card color="brand" title="Teltis"
-                    description="Ērtam pasākumam jebkuros laikapstākļos" href="#" :image="asset('images/category-teltis.png')"
-                    image-alt="Pasākumu telts" />
-                <x-public.category-card color="sun" title="Nojumes"
-                    description="Praktisks risinājums svinībām un pasākumiem ārā" href="#" :image="asset('images/category-nojumes.png')"
-                    image-alt="Nojume" />
-            </x-public.card-carousel>
-        </div>
-    </section>
+                <x-public.card-carousel class="-mx-4 lg:mx-0">
+                    @foreach ($this->categories as $category)
+                        <x-public.category-card wire:key="category-{{ $category->id }}" :color="$category->color->value"
+                            :title="$category->title" :description="$category->tagline" :href="route('category.show', $category->slug)"
+                            :image="$category->url()" :image-alt="$category->title" />
+                    @endforeach
+                </x-public.card-carousel>
+            </div>
+        </section>
+    @endif
 
     <section class="px-4 py-16 lg:px-8">
         <div class="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-16">

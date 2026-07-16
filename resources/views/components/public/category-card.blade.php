@@ -29,10 +29,10 @@
             </p>
         @endif
 
-        <a href="{{ $href }}" class="inline-flex items-center gap-2 rounded-xl border border-gray-50 bg-gray-50 px-3.5 py-2 text-sm font-semibold text-brand shadow-xs transition-colors hover:bg-white">
+        <x-public.button variant="light" size="sm" :href="$href" wire:navigate>
             Apskatīt
             <x-public.icons.arrow-right class="size-5" />
-        </a>
+        </x-public.button>
     </div>
 
     @if ($image)
