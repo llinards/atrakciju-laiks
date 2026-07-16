@@ -967,7 +967,7 @@ class CategorySeeder extends Seeder
                         ],
                         'rental_prices' => [
                             'Pirmdiena–ceturtdiena' => '110€',
-                            'Piektdiena–svētdiena' => '110€',
+                            'Piektdiena–svētdiena un svētku dienas' => '110€',
                         ],
                         'included_items' => [
                             'telts soma ar 3-daļīgu mastu;',
@@ -999,7 +999,7 @@ class CategorySeeder extends Seeder
                         ],
                         'rental_prices' => [
                             'Pirmdiena–ceturtdiena' => '70€',
-                            'Piektdiena–svētdiena' => '70€',
+                            'Piektdiena–svētdiena un svētku dienas' => '70€',
                         ],
                         'included_items' => [
                             'telts soma ar 3-daļīgu mastu;',
@@ -1041,7 +1041,7 @@ class CategorySeeder extends Seeder
                         ],
                         'rental_prices' => [
                             'Pirmdiena–ceturtdiena' => '96€',
-                            'Piektdiena–svētdiena' => '96€',
+                            'Piektdiena–svētdiena un svētku dienas' => '96€',
                         ],
                         'included_items' => [
                             '90 kg atsvari;',
@@ -1073,7 +1073,7 @@ class CategorySeeder extends Seeder
                         ],
                         'rental_prices' => [
                             'Pirmdiena–ceturtdiena' => '148€',
-                            'Piektdiena–svētdiena' => '148€',
+                            'Piektdiena–svētdiena un svētku dienas' => '148€',
                         ],
                         'included_items' => [
                             '120 kg atsvari;',
@@ -1105,7 +1105,7 @@ class CategorySeeder extends Seeder
                         ],
                         'rental_prices' => [
                             'Pirmdiena–ceturtdiena' => '96€',
-                            'Piektdiena–svētdiena' => '96€',
+                            'Piektdiena–svētdiena un svētku dienas' => '96€',
                         ],
                         'included_items' => [
                             '120 kg atsvari;',
