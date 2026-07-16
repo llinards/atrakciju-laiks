@@ -30,10 +30,19 @@ class Category extends Model
 
     protected static function booted(): void
     {
-        // The DB cascade removes product rows without firing their model
-        // events, so their image files are cleaned up here alongside our own.
+        // The DB cascade removes product and gallery rows without firing
+        // their model events, so their image files are cleaned up here
+        // alongside our own.
         static::deleting(function (Category $category): void {
             $paths = $category->products()->whereNotNull('path')->pluck('path')->all();
+
+            $paths = [
+                ...$paths,
+                ...ProductImage::query()
+                    ->whereIn('product_id', $category->products()->select('id'))
+                    ->pluck('path')
+                    ->all(),
+            ];
 
             if ($category->path !== null) {
                 $paths[] = $category->path;

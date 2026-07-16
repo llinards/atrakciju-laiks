@@ -293,7 +293,10 @@ new #[Title('Produkti')] class extends Component {
                                 @else
                                     <flux:icon.photo class="size-10 shrink-0 rounded-lg bg-zinc-100 p-2 text-zinc-400 dark:bg-zinc-700" />
                                 @endif
-                                <p class="truncate font-medium">{{ $product->name }}</p>
+                                <div class="min-w-0">
+                                    <p class="truncate font-medium">{{ $product->name }}</p>
+                                    <p class="truncate text-sm text-zinc-500">/{{ $product->category->slug }}/{{ $product->slug }}</p>
+                                </div>
                                 @if ($product->is_new)
                                     <flux:badge size="sm" color="amber">JAUNUMS!</flux:badge>
                                 @endif

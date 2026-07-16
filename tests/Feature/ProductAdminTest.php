@@ -3,6 +3,7 @@
 use App\Enums\ProductSize;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -96,6 +97,21 @@ test('a product can be deleted and its image file is removed', function () {
 
     expect(Product::query()->count())->toBe(0);
     Storage::disk('public')->assertMissing($path);
+});
+
+test('deleting a product also removes its gallery image files', function () {
+    Storage::fake('public');
+    $this->actingAs(User::factory()->create());
+
+    $product = Product::factory()->create();
+    $galleryPath = UploadedFile::fake()->image('galerija.jpg')->store('products/gallery', 'public');
+    ProductImage::factory()->for($product)->create(['path' => $galleryPath]);
+
+    Livewire::test('pages::admin.products')
+        ->call('delete', $product->id);
+
+    expect(ProductImage::query()->count())->toBe(0);
+    Storage::disk('public')->assertMissing($galleryPath);
 });
 
 test('the discount price must be lower than the standard price', function (string $discountPrice) {

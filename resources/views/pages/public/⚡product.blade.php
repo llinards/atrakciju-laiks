@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -24,8 +25,8 @@ new #[Layout('layouts::public')] class extends Component {
     }
 
     /**
-     * Static-phase gallery: the product's real image padded with bundled
-     * placeholders until products get their own image galleries.
+     * The product's main image followed by its stored gallery. Products
+     * without a gallery yet fall back to bundled demo placeholders.
      *
      * @return array<int, array{src: string, alt: string, width: int, height: int}>
      */
@@ -33,9 +34,15 @@ new #[Layout('layouts::public')] class extends Component {
     {
         $main = $this->product->url() ?? asset('images/pattern-1.svg');
 
-        return collect([$main, asset('images/about-1.png'), asset('images/hero-1.png'), asset('images/about-1.png'), asset('images/hero-1.png')])
+        $gallery = $this->product->images->map(fn (ProductImage $image): string => $image->url());
+
+        $sources = $gallery->isNotEmpty()
+            ? $gallery->prepend($main)
+            : collect([$main, asset('images/about-1.png'), asset('images/hero-1.png'), asset('images/about-1.png'), asset('images/hero-1.png')]);
+
+        return $sources
             ->map(
-                fn(string $src): array => [
+                fn (string $src): array => [
                     'src' => $src,
                     'alt' => $this->product->name,
                     'width' => Product::IMAGE_WIDTH,
@@ -58,6 +65,82 @@ new #[Layout('layouts::public')] class extends Component {
             ->ordered()
             ->limit(8)
             ->get();
+    }
+
+    /**
+     * Seeded/admin data when present, demo placeholders otherwise —
+     * removed once every category's content has been migrated.
+     *
+     * @return array<string, string>
+     */
+    public function specs(): array
+    {
+        return $this->product->specs ?? [
+            'Garums' => '9,5 m',
+            'Platums' => '4,4 m',
+            'Augstums' => '6,9 m',
+            'Svars' => '234 kg',
+            'Elektroapgāde' => '220–240V',
+            'Sertifikāts' => 'ISO EN14960:2013',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function includedItems(): array
+    {
+        return $this->product->included_items ?? [
+            'atrakcijai piemērots gaisa pūtējs;',
+            'elektroapgādes pagarinātājs 25 m vai 40 m garumā;',
+            'apakšklājs / pārklājs;',
+            'nepieciešamais drošības aprīkojums.',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function rentalPrices(): array
+    {
+        return $this->product->rental_prices ?? [
+            'Pirmdiena–ceturtdiena' => '180€',
+            'Piektdiena–svētdiena un svētku dienas' => '180€',
+            'Korporatīviem, sporta, publiskiem un bērnudārzu pasākumiem' => '290€',
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function rentalTermsParagraphs(): array
+    {
+        $terms = $this->product->rental_terms
+            ?? 'Viena nomas diena ir no plkst. 8:00 / 12:00 līdz 18:00 / 20:00, vai pēc individuālas vienošanās. '
+            .'Nomājot atrakciju uz vairākām dienām, katrai nākamajai dienai tiek piemērota atlaide. '
+            .'Apkalpojam klientus visā Latvijā. Projekta piedāvājumus sagatavojam individuāli.';
+
+        return $this->splitParagraphs($terms);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function descriptionParagraphs(): array
+    {
+        if ($this->product->description === null) {
+            return [];
+        }
+
+        return $this->splitParagraphs($this->product->description);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function splitParagraphs(string $text): array
+    {
+        return preg_split('/\R{2,}/', trim($text)) ?: [];
     }
 };
 ?>
@@ -98,25 +181,13 @@ new #[Layout('layouts::public')] class extends Component {
                 <div class="flex flex-col gap-1">
                     <h2 class="font-heading text-lg font-bold text-gray-900">Tehniskā informācija:</h2>
 
-                    <x-public.spec-table :rows="[
-                        'Garums' => '9,5 m',
-                        'Platums' => '4,4 m',
-                        'Augstums' => '6,9 m',
-                        'Svars' => '234 kg',
-                        'Elektroapgāde' => '220–240V',
-                        'Sertifikāts' => 'ISO EN14960:2013',
-                    ]" />
+                    <x-public.spec-table :rows="$this->specs()" />
                 </div>
 
                 <div class="flex flex-col gap-3">
                     <h2 class="font-heading text-lg font-bold text-gray-900">Nomas komplektā iekļauts:</h2>
 
-                    <x-public.check-list :items="[
-                        'atrakcijai piemērots gaisa pūtējs;',
-                        'elektroapgādes pagarinātājs 25 m vai 40 m garumā;',
-                        'apakšklājs / pārklājs;',
-                        'nepieciešamais drošības aprīkojums.',
-                    ]" />
+                    <x-public.check-list :items="$this->includedItems()" />
                 </div>
 
                 <x-public.button variant="sun" href="#" class="w-full">
@@ -154,32 +225,52 @@ new #[Layout('layouts::public')] class extends Component {
 
             <section x-show="tab === 'about'" x-cloak role="tabpanel"
                 class="rounded-[22px] border border-gray-200 bg-white p-6 shadow-xs lg:p-10">
-                {{-- The image spans both rows, so the text block hugs the row
-                     boundary from above and the checklist from below — grouped
-                     around the vertical center instead of drifting apart. --}}
-                <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-6">
-                    <div class="flex flex-col gap-4 lg:self-end">
-                        <h2
-                            class="text-center font-heading text-4xl font-bold leading-none tracking-[-0.06em] text-black lg:text-left">
-                            Košs dizains
-                        </h2>
+                @if ($this->descriptionParagraphs() !== [])
+                    <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+                        <div class="flex flex-col gap-4">
+                            @foreach ($this->descriptionParagraphs() as $paragraph)
+                                <p @class(['leading-7 text-gray-800', 'font-heading text-xl font-semibold text-gray-900' => $loop->first])>
+                                    {{ $paragraph }}
+                                </p>
+                            @endforeach
 
-                        <p class="leading-7 text-gray-800">
-                            Košais dizains un Minecraft tematika padara šo atrakciju par lielisku izvēli bērnu
-                            ballītēm, skolu pasākumiem un lielākiem notikumiem.
-                        </p>
+                            @if ($product->suitability_items !== null)
+                                <x-public.check-list class="mt-2" :items="$product->suitability_items" />
+                            @endif
+                        </div>
+
+                        <img src="{{ $product->url() ?? asset('images/pattern-1.svg') }}" alt="{{ $product->name }}"
+                            class="aspect-[5/4] w-full rounded-2xl object-cover">
                     </div>
+                @else
+                    {{-- Demo placeholder until this category's content is seeded.
+                         The image spans both rows, so the text block hugs the row
+                         boundary from above and the checklist from below — grouped
+                         around the vertical center instead of drifting apart. --}}
+                    <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-6">
+                        <div class="flex flex-col gap-4 lg:self-end">
+                            <h2
+                                class="text-center font-heading text-4xl font-bold leading-none tracking-[-0.06em] text-black lg:text-left">
+                                Košs dizains
+                            </h2>
 
-                    <img src="{{ $product->url() ?? asset('images/pattern-1.svg') }}" alt="{{ $product->name }}"
-                        class="aspect-[5/4] w-full rounded-2xl object-cover lg:col-start-2 lg:row-span-2 lg:row-start-1">
+                            <p class="leading-7 text-gray-800">
+                                Košais dizains un Minecraft tematika padara šo atrakciju par lielisku izvēli bērnu
+                                ballītēm, skolu pasākumiem un lielākiem notikumiem.
+                            </p>
+                        </div>
 
-                    <x-public.check-list class="lg:col-start-1 lg:self-start" :items="[
-                        'Bērniem no 3 gadu vecuma',
-                        'Līdz 8 bērniem vienlaicīgi',
-                        'Vienam bērnam līdz 70 kg',
-                        'Bērniem līdz 160 cm augumam',
-                    ]" />
-                </div>
+                        <img src="{{ $product->url() ?? asset('images/pattern-1.svg') }}" alt="{{ $product->name }}"
+                            class="aspect-[5/4] w-full rounded-2xl object-cover lg:col-start-2 lg:row-span-2 lg:row-start-1">
+
+                        <x-public.check-list class="lg:col-start-1 lg:self-start" :items="[
+                            'Bērniem no 3 gadu vecuma',
+                            'Līdz 8 bērniem vienlaicīgi',
+                            'Vienam bērnam līdz 70 kg',
+                            'Bērniem līdz 160 cm augumam',
+                        ]" />
+                    </div>
+                @endif
             </section>
 
             <section x-show="tab === 'rental'" x-cloak role="tabpanel"
@@ -189,28 +280,27 @@ new #[Layout('layouts::public')] class extends Component {
                         <div class="flex flex-col gap-1">
                             <h2 class="font-heading text-lg font-bold text-gray-900">Cena par vienu nomas dienu:</h2>
 
-                            <x-public.spec-table :rows="[
-                                'Pirmdiena–ceturtdiena' => '180€',
-                                'Piektdiena–svētdiena un svētku dienas' => '180€',
-                                'Korporatīviem, sporta, publiskiem un bērnudārzu pasākumiem' => '290€',
-                            ]" />
+                            <x-public.spec-table :rows="$this->rentalPrices()" />
                         </div>
 
-                        <div class="flex flex-col gap-3">
-                            <h2 class="font-heading text-lg font-bold text-gray-900">Klientam jānodrošina:</h2>
+                        @if ($product->rental_terms === null)
+                            {{-- Demo placeholder until this category's content is seeded. --}}
+                            <div class="flex flex-col gap-3">
+                                <h2 class="font-heading text-lg font-bold text-gray-900">Klientam jānodrošina:</h2>
 
-                            <x-public.check-list :items="[
-                                'zaļā zona atrakcijas novietošanai;',
-                                'ērta piekļuve ar vismaz 1,3 m platu ieeju vai piebraucamo ceļu;',
-                                '220–240V elektrības pieslēgums līdz 40 m attālumā.',
-                            ]" />
+                                <x-public.check-list :items="[
+                                    'zaļā zona atrakcijas novietošanai;',
+                                    'ērta piekļuve ar vismaz 1,3 m platu ieeju vai piebraucamo ceļu;',
+                                    '220–240V elektrības pieslēgums līdz 40 m attālumā.',
+                                ]" />
+                            </div>
+                        @endif
+
+                        <div class="flex flex-col gap-4">
+                            @foreach ($this->rentalTermsParagraphs() as $paragraph)
+                                <p class="leading-7 text-gray-800">{{ $paragraph }}</p>
+                            @endforeach
                         </div>
-
-                        <p class="leading-7 text-gray-800">
-                            Viena nomas diena ir no plkst. 8:00 / 12:00 līdz 18:00 / 20:00, vai pēc individuālas
-                            vienošanās. Nomājot atrakciju uz vairākām dienām, katrai nākamajai dienai tiek piemērota
-                            atlaide. Apkalpojam klientus visā Latvijā. Projekta piedāvājumus sagatavojam individuāli.
-                        </p>
                     </div>
 
                     <img src="{{ $product->url() ?? asset('images/pattern-1.svg') }}" alt="{{ $product->name }}"

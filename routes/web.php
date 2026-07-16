@@ -20,9 +20,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 
-// Products are bound by id and scoped to their category, so a product id
-// under the wrong category slug returns a 404.
-Route::livewire('/{category:slug}/{product}', 'pages::public.product')
+// Products are scoped to their category, so a product slug under the wrong
+// category slug returns a 404.
+Route::livewire('/{category:slug}/{product:slug}', 'pages::public.product')
     ->scopeBindings()
     ->name('product.show');
 
