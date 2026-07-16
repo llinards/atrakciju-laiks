@@ -7,7 +7,7 @@
                 'href' => route('category.show', $category->slug),
             ])
             ->all(),
-        ['label' => 'Galerija', 'href' => '#'],
+        ['label' => 'Galerija', 'href' => route('gallery.index')],
         ['label' => 'Pārdošanas sadaļa', 'href' => route('sale.index')],
         ['label' => 'Kontakti', 'href' => route('contact')],
     ];

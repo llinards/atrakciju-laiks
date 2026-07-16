@@ -22,9 +22,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('products/create', 'pages::admin.product-form')->name('products.create');
 
     Route::livewire('products/{product}/edit', 'pages::admin.product-form')->name('products.edit');
+
+    Route::livewire('gallery', 'pages::admin.gallery-categories')->name('gallery-categories.edit');
+
+    Route::livewire('gallery/{galleryCategory}/photos', 'pages::admin.gallery-photos')->name('gallery-categories.photos');
 });
 
 require __DIR__.'/settings.php';
+
+// Photo gallery. Registered before the wildcards so "galerija" wins over
+// category slugs (and becomes a reserved path via NotReservedPath
+// automatically).
+Route::livewire('/galerija', 'pages::public.gallery')->name('gallery.index');
+
+Route::livewire('/galerija/{galleryCategory:slug}', 'pages::public.gallery-category')->name('gallery.show');
 
 // Products flagged for sale, across all categories. Registered before the
 // wildcards so "pardosana" wins over category slugs (and becomes a reserved

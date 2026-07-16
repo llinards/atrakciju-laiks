@@ -2,6 +2,32 @@ import PhotoSwipeLightbox from 'photoswipe/lightbox'
 import 'photoswipe/style.css'
 
 document.addEventListener('alpine:init', () => {
+    window.Alpine.data('lightboxGallery', (images) => ({
+        lightbox: null,
+
+        init() {
+            this.lightbox = new PhotoSwipeLightbox({
+                dataSource: images.map((image) => ({
+                    src: image.src,
+                    width: image.width,
+                    height: image.height,
+                    alt: image.alt,
+                })),
+                pswpModule: () => import('photoswipe'),
+            })
+            this.lightbox.init()
+        },
+
+        destroy() {
+            this.lightbox?.destroy()
+            this.lightbox = null
+        },
+
+        open(index) {
+            this.lightbox.loadAndOpen(index)
+        },
+    }))
+
     window.Alpine.data('productGallery', (images) => ({
         images,
         active: 0,

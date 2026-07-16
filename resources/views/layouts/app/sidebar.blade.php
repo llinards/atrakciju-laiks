@@ -35,6 +35,10 @@
                     <flux:sidebar.item icon="cube" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>
                         {{ __('Products') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="camera" :href="route('gallery-categories.edit')" :current="request()->routeIs('gallery-categories.*')" wire:navigate>
+                        {{ __('Gallery') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

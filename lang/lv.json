@@ -542,5 +542,15 @@
     "Delete this image?": "Dzēst šo attēlu?",
     "Remove image": "Noņemt attēlu",
     "Remove this image?": "Noņemt šo attēlu?",
-    "Unsaved changes": "Nesaglabātas izmaiņas"
+    "Unsaved changes": "Nesaglabātas izmaiņas",
+    "Photo albums shown on the public Galerija page. Hidden categories are not reachable on the public site.": "Foto albumi, kas redzami publiskajā Galerijas lapā. Paslēptās kategorijas publiskajā vietnē nav pieejamas.",
+    "No gallery categories yet - the public Galerija page is empty.": "Vēl nav galerijas kategoriju - publiskā Galerijas lapa ir tukša.",
+    "Delete this category and all its photos?": "Dzēst šo kategoriju un visas tās fotogrāfijas?",
+    "Photos": "Fotogrāfijas",
+    "Manage photos": "Pārvaldīt fotogrāfijas",
+    "Photos shown on the public gallery page. Drag to reorder.": "Fotogrāfijas, kas redzamas publiskajā galerijas lapā. Velc, lai mainītu secību.",
+    "No photos yet - upload the first ones below.": "Vēl nav fotogrāfiju - augšupielādē pirmās zemāk.",
+    "Back to gallery": "Atpakaļ uz galeriju",
+    "After saving you will be taken straight to the photo upload - the first photo becomes the category cover.": "Pēc saglabāšanas nonāksi tieši fotogrāfiju augšupielādē - pirmā fotogrāfija kļūst par kategorijas vāku.",
+    "Save and add photos": "Saglabāt un pievienot fotogrāfijas"
 }
