@@ -15,6 +15,7 @@
     <x-public.footer />
     <x-public.floating-contacts />
     <x-public.scroll-top />
+    <x-public.reserve-modal />
 
     @livewireScripts
 </body>

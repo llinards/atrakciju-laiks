@@ -153,7 +153,7 @@ new #[Layout('layouts::public')] class extends Component {
                     </div>
                 @endif
 
-                <x-public.button variant="sun" href="#" class="w-full">
+                <x-public.button variant="sun" class="w-full" x-data @click="$dispatch('open-reserve-modal')">
                     Rezervēt
                 </x-public.button>
             </div>

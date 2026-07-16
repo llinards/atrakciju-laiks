@@ -100,7 +100,7 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
                     @endforeach
                 </ul>
 
-                <x-public.button variant="sun" href="mailto:{{ config('site.email') }}">
+                <x-public.button variant="sun" x-data @click="$dispatch('open-reserve-modal')">
                     Sazinies ar mums!
                 </x-public.button>
             </div>
