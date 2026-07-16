@@ -19,10 +19,10 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $title = $this->faker->unique()->words(2, true);
+        $title = rtrim($this->faker->unique()->sentence(2), '.');
 
         return [
-            'title' => Str::ucfirst($title),
+            'title' => $title,
             'slug' => Str::slug($title),
             'tagline' => $this->faker->sentence(4),
             'description' => $this->faker->sentence(),

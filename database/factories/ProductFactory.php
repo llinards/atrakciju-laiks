@@ -6,7 +6,6 @@ use App\Enums\ProductSize;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Product>
@@ -22,7 +21,7 @@ class ProductFactory extends Factory
     {
         return [
             'category_id' => Category::factory(),
-            'name' => Str::ucfirst($this->faker->words(3, true)),
+            'name' => rtrim($this->faker->sentence(3), '.'),
             'price' => $this->faker->randomFloat(2, 20, 300),
             'size' => null,
             'is_visible' => true,
