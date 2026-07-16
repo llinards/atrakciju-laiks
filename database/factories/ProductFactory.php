@@ -24,6 +24,7 @@ class ProductFactory extends Factory
             'name' => rtrim($this->faker->sentence(3), '.'),
             'price' => $this->faker->randomFloat(2, 20, 300),
             'size' => null,
+            'is_new' => false,
             'is_visible' => true,
             'position' => $this->faker->numberBetween(0, 10),
         ];
@@ -32,6 +33,11 @@ class ProductFactory extends Factory
     public function hidden(): static
     {
         return $this->state(['is_visible' => false]);
+    }
+
+    public function isNew(): static
+    {
+        return $this->state(['is_new' => true]);
     }
 
     public function discounted(): static

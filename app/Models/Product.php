@@ -31,6 +31,7 @@ class Product extends Model
             'price' => 'decimal:2',
             'discount_price' => 'decimal:2',
             'size' => ProductSize::class,
+            'is_new' => 'boolean',
             'is_visible' => 'boolean',
         ];
     }

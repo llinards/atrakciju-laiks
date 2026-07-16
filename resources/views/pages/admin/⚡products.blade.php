@@ -32,6 +32,8 @@ new #[Title('Produkti')] class extends Component {
 
     public ?string $size = null;
 
+    public bool $isNew = false;
+
     public ?TemporaryUploadedFile $image = null;
 
     public ?string $existingImageUrl = null;
@@ -80,6 +82,7 @@ new #[Title('Produkti')] class extends Component {
         $this->price = $product->price;
         $this->discountPrice = $product->discount_price;
         $this->size = $product->size?->value;
+        $this->isNew = $product->is_new;
         $this->image = null;
         $this->existingImageUrl = $product->url();
         $this->resetValidation();
@@ -103,6 +106,7 @@ new #[Title('Produkti')] class extends Component {
                 'price' => ['required', 'numeric', 'decimal:0,2', 'min:0', 'max:999999.99'],
                 'discountPrice' => ['nullable', 'numeric', 'decimal:0,2', 'lt:price', 'min:0'],
                 'size' => ['nullable', Rule::enum(ProductSize::class)],
+                'isNew' => ['boolean'],
                 'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             ],
             messages: [
@@ -138,6 +142,7 @@ new #[Title('Produkti')] class extends Component {
             'price' => $validated['price'],
             'discount_price' => $validated['discountPrice'],
             'size' => $validated['size'],
+            'is_new' => $validated['isNew'],
             'path' => $path,
             'position' => $existing?->position ?? (int) Product::query()->max('position') + 1,
         ];
@@ -232,7 +237,7 @@ new #[Title('Produkti')] class extends Component {
 
     private function resetForm(): void
     {
-        $this->reset('editingId', 'categoryId', 'name', 'price', 'discountPrice', 'size', 'image', 'existingImageUrl');
+        $this->reset('editingId', 'categoryId', 'name', 'price', 'discountPrice', 'size', 'isNew', 'image', 'existingImageUrl');
         $this->resetValidation();
     }
 }; ?>
@@ -289,6 +294,9 @@ new #[Title('Produkti')] class extends Component {
                                     <flux:icon.photo class="size-10 shrink-0 rounded-lg bg-zinc-100 p-2 text-zinc-400 dark:bg-zinc-700" />
                                 @endif
                                 <p class="truncate font-medium">{{ $product->name }}</p>
+                                @if ($product->is_new)
+                                    <flux:badge size="sm" color="amber">JAUNUMS!</flux:badge>
+                                @endif
                             </div>
                         </flux:table.cell>
                         <flux:table.cell>{{ $product->category->title }}</flux:table.cell>
@@ -364,6 +372,9 @@ new #[Title('Produkti')] class extends Component {
                     <flux:select.option value="{{ $case->value }}">{{ $case->label() }}</flux:select.option>
                 @endforeach
             </flux:select>
+
+            <flux:checkbox wire:model="isNew" :label="__('New product')"
+                :description="__('Shows a JAUNUMS! badge on the public site — no need to put it in the name.')" />
 
             <x-admin.image-field :image="$image" :existing-image-url="$existingImageUrl" />
 

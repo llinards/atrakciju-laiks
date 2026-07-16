@@ -43,6 +43,18 @@ test('discounted product shows struck original price and computed percent badge'
     $response->assertSee('19% atlaide');
 });
 
+test('new product shows the JAUNUMS! badge on its card', function () {
+    $category = Category::factory()->create();
+
+    Product::factory()->for($category)->isNew()->create(['name' => 'Minecraft']);
+    Product::factory()->for($category)->create(['name' => 'Fortnite']);
+
+    $response = $this->get(route('category.show', $category->slug));
+
+    $response->assertSuccessful();
+    expect(substr_count($response->getContent(), 'JAUNUMS!'))->toBe(1);
+});
+
 test('product without discount shows no atlaide badge', function () {
     $category = Category::factory()->create();
 

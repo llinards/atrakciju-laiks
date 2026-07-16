@@ -20,6 +20,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/settings.php';
 
+// Products are bound by id and scoped to their category, so a product id
+// under the wrong category slug returns a 404.
+Route::livewire('/{category:slug}/{product}', 'pages::public.product')
+    ->scopeBindings()
+    ->name('product.show');
+
 // Root-level category slugs — must stay the LAST registered route so
 // every explicitly defined path above wins over the wildcard.
 Route::livewire('/{category:slug}', 'pages::public.category')->name('category.show');

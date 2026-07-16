@@ -113,7 +113,8 @@ new #[Layout('layouts::public')] class extends Component {
                 @foreach ($this->products as $product)
                     <x-public.product-card wire:key="product-{{ $product->id }}" :name="$product->name"
                         :price="$product->formattedPrice()" :original-price="$product->formattedOriginalPrice()"
-                        :discount-percent="$product->discountPercent()" :image="$product->url()" :image-alt="$product->name" />
+                        :discount-percent="$product->discountPercent()" :is-new="$product->is_new" :image="$product->url()"
+                        :image-alt="$product->name" :href="route('product.show', [$category, $product])" />
                 @endforeach
             </div>
 

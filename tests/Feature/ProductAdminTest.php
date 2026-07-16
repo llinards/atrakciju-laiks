@@ -36,7 +36,32 @@ test('a product can be created', function () {
         ->name->toBe('Piepūšamā pils')
         ->is_visible->toBeTrue()
         ->discount_price->toBeNull()
-        ->size->toBeNull();
+        ->size->toBeNull()
+        ->is_new->toBeFalse();
+});
+
+test('a product can be marked as new and unmarked again', function () {
+    $this->actingAs(User::factory()->create());
+
+    $product = Product::factory()->create();
+
+    Livewire::test('pages::admin.products')
+        ->call('edit', $product->id)
+        ->assertSet('isNew', false)
+        ->set('isNew', true)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($product->refresh()->is_new)->toBeTrue();
+
+    Livewire::test('pages::admin.products')
+        ->call('edit', $product->id)
+        ->assertSet('isNew', true)
+        ->set('isNew', false)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect($product->refresh()->is_new)->toBeFalse();
 });
 
 test('a product can be updated', function () {

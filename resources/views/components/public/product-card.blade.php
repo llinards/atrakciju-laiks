@@ -3,6 +3,7 @@
     'price',
     'originalPrice' => null,
     'discountPercent' => null,
+    'isNew' => false,
     'image' => null,
     'imageAlt' => '',
     'href' => '#',
@@ -15,6 +16,12 @@
         @else
             <img src="{{ asset('images/pattern-1.svg') }}" alt="" aria-hidden="true"
                 class="pointer-events-none absolute -left-10 -top-10 h-[150%] w-[130%] max-w-none opacity-8">
+        @endif
+
+        @if ($isNew)
+            <span class="absolute left-3 top-3 rounded-full bg-brand px-3 py-1.5 text-sm font-semibold text-white shadow-xs">
+                JAUNUMS!
+            </span>
         @endif
 
         @if ($discountPercent)
@@ -37,7 +44,7 @@
             @endif
         </p>
 
-        <x-public.button variant="sun" :href="$href" class="mt-3 w-full">
+        <x-public.button variant="sun" :href="$href" class="mt-3 w-full" :wire:navigate="$href !== '#'">
             Rezervēt
         </x-public.button>
     </div>
