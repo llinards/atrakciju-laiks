@@ -32,7 +32,7 @@
                         {{ __('Categories') }}
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="cube" :href="route('products.edit')" :current="request()->routeIs('products.edit')" wire:navigate>
+                    <flux:sidebar.item icon="cube" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>
                         {{ __('Products') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>

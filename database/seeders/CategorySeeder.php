@@ -42,8 +42,13 @@ class CategorySeeder extends Seeder
             foreach ($category['products'] as $productPosition => $product) {
                 $imagePath = Arr::pull($product, 'image_path');
                 $gallery = Arr::pull($product, 'gallery', []);
+                $suitabilityItems = Arr::pull($product, 'suitability_items', []);
 
                 $data = [...$product, 'position' => $productPosition];
+
+                if ($suitabilityItems !== []) {
+                    $data['description'] = $this->composeDescription($product['description'] ?? null, $suitabilityItems);
+                }
 
                 // Never clear an existing image when the legacy site is unreachable.
                 if ($imagePath !== null && ($path = $this->fetchProductImage($imagePath, $product['name'])) !== null) {
@@ -141,6 +146,25 @@ class CategorySeeder extends Seeder
             ->storePubliclyAs('products/gallery', "{$slug}-{$position}.webp", 'public');
 
         return $stored ?: null;
+    }
+
+    /**
+     * The public page and the admin rich text editor both work with HTML, so
+     * a plain-text description gains paragraph tags and the suitability
+     * checklist is appended as a bullet list.
+     *
+     * @param  list<string>  $items
+     */
+    private function composeDescription(?string $text, array $items): string
+    {
+        $paragraphs = collect(preg_split('/\R{2,}/', trim($text ?? '')) ?: [])
+            ->filter(fn (string $paragraph): bool => $paragraph !== '')
+            ->map(fn (string $paragraph): string => '<p>'.e($paragraph).'</p>')
+            ->implode('');
+
+        $list = '<ul>'.collect($items)->map(fn (string $item): string => '<li>'.e($item).'</li>')->implode('').'</ul>';
+
+        return $paragraphs.$list;
     }
 
     /**

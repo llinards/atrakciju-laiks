@@ -4,7 +4,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 
-test('product page renders name, price and static sections', function () {
+test('product page renders name and price without detail sections for a bare product', function () {
     $category = Category::factory()->create();
 
     $product = Product::factory()->for($category)->create([
@@ -17,14 +17,14 @@ test('product page renders name, price and static sections', function () {
     $response->assertSuccessful();
     $response->assertSeeInOrder(['Atpakaļ', 'JAUNUMS! Minecraft'], escape: false);
     $response->assertSee('Nomas cena no 180€');
-    $response->assertSee('Tehniskā informācija:');
-    $response->assertSee('Garums');
-    $response->assertSee('Nomas komplektā iekļauts:');
     $response->assertSee('Rezervēt');
-    $response->assertSee('Par atrakciju');
-    $response->assertSee('Noma un uzstādīšana');
-    $response->assertSee('Košs dizains');
-    $response->assertSee('Cena par vienu nomas dienu:');
+
+    // Detail sections only render once their data exists.
+    $response->assertDontSee('Tehniskā informācija:');
+    $response->assertDontSee('Nomas komplektā iekļauts:');
+    $response->assertDontSee('Par atrakciju');
+    $response->assertDontSee('Noma un uzstādīšana');
+    $response->assertDontSee('Cena par vienu nomas dienu:');
 });
 
 test('product page title uses the product name', function () {
@@ -65,12 +65,12 @@ test('stored gallery images replace the placeholder gallery', function () {
     $response->assertDontSee('images/about-1.png');
 });
 
-test('products without a gallery fall back to placeholder images', function () {
+test('products without a gallery show only their main image', function () {
     $category = Category::factory()->create();
     $product = Product::factory()->for($category)->create();
 
     $this->get(route('product.show', [$category, $product]))
-        ->assertSee('images/about-1.png');
+        ->assertDontSee('images/about-1.png');
 });
 
 test('stored detail content replaces the static placeholders', function () {
@@ -79,8 +79,9 @@ test('stored detail content replaces the static placeholders', function () {
     $product = Product::factory()->for($category)->create([
         'name' => 'Krāsaina zvaigzne',
         'price' => 70,
-        'description' => "Rekomendējama dažāda veida pasākumiem.\n\nTelts izgatavota no izturīga PVC materiāla.",
-        'suitability_items' => ['Bērniem no 3 gadu vecuma', 'Līdz 6 bērniem vienlaicīgi'],
+        'description' => '<p>Rekomendējama dažāda veida pasākumiem.</p>'
+            .'<p>Telts izgatavota no izturīga PVC materiāla.</p>'
+            .'<ul><li>Bērniem no 3 gadu vecuma</li><li>Līdz 6 bērniem vienlaicīgi</li></ul>',
         'specs' => ['Izmēri' => '16 m x 16 m', 'Cilvēku skaits' => 'Līdz 40'],
         'rental_prices' => ['Pirmdiena–ceturtdiena' => '70€', 'Piektdiena–svētdiena' => '70€'],
         'included_items' => ['telts soma ar 3-daļīgu mastu;', 'enkurstieņi.'],

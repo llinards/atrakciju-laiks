@@ -15,7 +15,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::livewire('categories', 'pages::admin.categories')->name('categories.edit');
 
-    Route::livewire('products', 'pages::admin.products')->name('products.edit');
+    Route::livewire('products', 'pages::admin.products')->name('products.index');
+
+    Route::livewire('products/create', 'pages::admin.product-form')->name('products.create');
+
+    Route::livewire('products/{product}/edit', 'pages::admin.product-form')->name('products.edit');
 });
 
 require __DIR__.'/settings.php';

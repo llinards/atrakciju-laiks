@@ -1,42 +1,16 @@
 <?php
 
-use App\Actions\StoreOptimizedImage;
-use App\Enums\ProductSize;
 use App\Models\Category;
 use App\Models\Product;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Livewire\WithFileUploads;
 
 new #[Title('Produkti')] class extends Component {
-    use WithFileUploads;
-
     public string $categoryFilter = '';
-
-    public ?int $editingId = null;
-
-    public string $categoryId = '';
-
-    public string $name = '';
-
-    public string $price = '';
-
-    public ?string $discountPrice = null;
-
-    public ?string $size = null;
-
-    public bool $isNew = false;
-
-    public ?TemporaryUploadedFile $image = null;
-
-    public ?string $existingImageUrl = null;
 
     /**
      * @return Collection<int, Product>
@@ -59,116 +33,6 @@ new #[Title('Produkti')] class extends Component {
     public function categoryOptions(): Collection
     {
         return Category::query()->ordered()->get();
-    }
-
-    /**
-     * Open the form modal for a new product.
-     */
-    public function create(): void
-    {
-        $this->resetForm();
-
-        Flux::modal('product-form')->show();
-    }
-
-    /**
-     * Open the form modal for an existing product.
-     */
-    public function edit(Product $product): void
-    {
-        $this->editingId = $product->id;
-        $this->categoryId = (string) $product->category_id;
-        $this->name = $product->name;
-        $this->price = $product->price;
-        $this->discountPrice = $product->discount_price;
-        $this->size = $product->size?->value;
-        $this->isNew = $product->is_new;
-        $this->image = null;
-        $this->existingImageUrl = $product->url();
-        $this->resetValidation();
-
-        Flux::modal('product-form')->show();
-    }
-
-    /**
-     * Create or update the product being edited.
-     */
-    public function save(): void
-    {
-        // Livewire inputs submit '' instead of null; nullable rules only skip real null.
-        $this->discountPrice = $this->discountPrice === '' ? null : $this->discountPrice;
-        $this->size = $this->size === '' ? null : $this->size;
-
-        $validated = $this->validate(
-            rules: [
-                'categoryId' => ['required', 'integer', Rule::exists(Category::class, 'id')],
-                'name' => ['required', 'string', 'max:255'],
-                'price' => ['required', 'numeric', 'decimal:0,2', 'min:0', 'max:999999.99'],
-                'discountPrice' => ['nullable', 'numeric', 'decimal:0,2', 'lt:price', 'min:0'],
-                'size' => ['nullable', Rule::enum(ProductSize::class)],
-                'isNew' => ['boolean'],
-                'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            ],
-            messages: [
-                'discountPrice.lt' => __('The discount price must be lower than the standard price.'),
-            ],
-            attributes: [
-                'categoryId' => __('category attribute'),
-                'name' => __('name attribute'),
-                'price' => __('price attribute'),
-                'discountPrice' => __('discount price attribute'),
-                'size' => __('size attribute'),
-                'image' => __('image attribute'),
-            ],
-        );
-
-        $existing = $this->editingId !== null
-            ? Product::query()->whereKey($this->editingId)->firstOrFail()
-            : null;
-
-        $path = $existing?->path;
-
-        if ($this->image !== null) {
-            if ($path !== null) {
-                Storage::disk('public')->delete($path);
-            }
-
-            $path = app(StoreOptimizedImage::class)->handle($this->image, 'products', Product::IMAGE_WIDTH, Product::IMAGE_HEIGHT);
-        }
-
-        $data = [
-            'category_id' => (int) $validated['categoryId'],
-            'name' => $validated['name'],
-            'price' => $validated['price'],
-            'discount_price' => $validated['discountPrice'],
-            'size' => $validated['size'],
-            'is_new' => $validated['isNew'],
-            'path' => $path,
-            'position' => $existing?->position ?? (int) Product::query()->max('position') + 1,
-        ];
-
-        $existing !== null ? $existing->update($data) : Product::query()->create($data);
-
-        $this->resetForm();
-        unset($this->products);
-
-        Flux::modal('product-form')->close();
-        Flux::toast(variant: 'success', text: __('Product saved.'));
-    }
-
-    /**
-     * Remove the stored image without touching the rest of the product.
-     */
-    public function removeImage(Product $product): void
-    {
-        if ($product->path !== null) {
-            Storage::disk('public')->delete($product->path);
-        }
-
-        $product->update(['path' => null]);
-        unset($this->products);
-
-        Flux::toast(variant: 'success', text: __('Product image removed.'));
     }
 
     /**
@@ -225,7 +89,7 @@ new #[Title('Produkti')] class extends Component {
     }
 
     /**
-     * Delete the product; its model event removes the stored image file.
+     * Delete the product; its model event removes the stored image files.
      */
     public function delete(Product $product): void
     {
@@ -233,12 +97,6 @@ new #[Title('Produkti')] class extends Component {
         unset($this->products);
 
         Flux::toast(variant: 'success', text: __('Product deleted.'));
-    }
-
-    private function resetForm(): void
-    {
-        $this->reset('editingId', 'categoryId', 'name', 'price', 'discountPrice', 'size', 'isNew', 'image', 'existingImageUrl');
-        $this->resetValidation();
     }
 }; ?>
 
@@ -261,7 +119,8 @@ new #[Title('Produkti')] class extends Component {
             </flux:select>
         </div>
 
-        <flux:button variant="primary" icon="plus" wire:click="create" data-test="add-product-button">
+        <flux:button variant="primary" icon="plus" :href="route('products.create')" wire:navigate
+            data-test="add-product-button">
             {{ __('Add product') }}
         </flux:button>
     </div>
@@ -319,7 +178,8 @@ new #[Title('Produkti')] class extends Component {
                             />
                         </flux:table.cell>
                         <flux:table.cell class="whitespace-nowrap">
-                            <flux:button size="sm" icon="pencil-square" wire:click="edit({{ $product->id }})" aria-label="{{ __('Edit') }}" />
+                            <flux:button size="sm" icon="pencil-square" :href="route('products.edit', $product)"
+                                wire:navigate aria-label="{{ __('Edit') }}" />
                             <flux:button
                                 size="sm"
                                 variant="danger"
@@ -338,58 +198,4 @@ new #[Title('Produkti')] class extends Component {
             <flux:callout.text>{{ __('No products yet.') }}</flux:callout.text>
         </flux:callout>
     @endif
-
-    <flux:modal name="product-form" class="w-full max-w-lg">
-        <form wire:submit="save" class="space-y-6">
-            <flux:heading size="lg">
-                {{ $editingId ? __('Edit product') : __('Add product') }}
-            </flux:heading>
-
-            <flux:select wire:model="categoryId" :label="__('Category')" :placeholder="__('Choose a category...')">
-                @foreach ($this->categoryOptions as $category)
-                    <flux:select.option value="{{ $category->id }}">{{ $category->title }}</flux:select.option>
-                @endforeach
-            </flux:select>
-
-            <flux:input wire:model="name" :label="__('Name')" type="text" required />
-
-            <div class="grid grid-cols-2 gap-4">
-                <flux:input wire:model="price" :label="__('Price (EUR)')" type="number" step="0.01" min="0" required />
-
-                <flux:input
-                    wire:model="discountPrice"
-                    :label="__('Discount price (EUR)')"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                />
-            </div>
-
-            <flux:text size="sm" class="!-mt-4 text-zinc-500">
-                {{ __('Discount price is optional. When set, it becomes the displayed price, the standard price is shown struck through, and the discount percent badge is computed automatically.') }}
-            </flux:text>
-
-            <flux:select wire:model="size" :label="__('Size')">
-                <flux:select.option value="">—</flux:select.option>
-                @foreach (\App\Enums\ProductSize::cases() as $case)
-                    <flux:select.option value="{{ $case->value }}">{{ $case->label() }}</flux:select.option>
-                @endforeach
-            </flux:select>
-
-            <flux:checkbox wire:model="isNew" :label="__('New product')"
-                :description="__('Shows a JAUNUMS! badge on the public site — no need to put it in the name.')" />
-
-            <x-admin.image-field :image="$image" :existing-image-url="$existingImageUrl" />
-
-            <div class="flex justify-end gap-2">
-                <flux:modal.close>
-                    <flux:button variant="ghost">{{ __('Cancel') }}</flux:button>
-                </flux:modal.close>
-
-                <flux:button variant="primary" type="submit" data-test="save-product-button">
-                    {{ __('Save') }}
-                </flux:button>
-            </div>
-        </form>
-    </flux:modal>
 </section>

@@ -36,7 +36,6 @@ class Product extends Model
             'specs' => 'array',
             'rental_prices' => 'array',
             'included_items' => 'array',
-            'suitability_items' => 'array',
             'is_new' => 'boolean',
             'is_visible' => 'boolean',
         ];

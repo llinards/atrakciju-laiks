@@ -51,3 +51,43 @@
         outline-color: var(--color-white);
     }
 }
+
+@layer components {
+    /* Admin rich text editor output (product description, rental terms).
+       Bullet lists render with the same teal check icon as x-public.check-list. */
+    .rich-text {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        line-height: calc(7 / 4 * 1rem);
+        color: var(--color-gray-800);
+    }
+
+    .rich-text a {
+        color: var(--color-brand);
+        text-decoration: underline;
+    }
+
+    .rich-text ol {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+        padding-left: 1.25rem;
+        list-style: decimal;
+    }
+
+    .rich-text ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+    }
+
+    .rich-text ul > li {
+        min-height: 1.5rem;
+        padding-left: 2.25rem;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='24' height='24' rx='12' fill='%2311CAF0' fill-opacity='0.5'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M17.0964 7.39004L9.93641 14.3L8.03641 12.27C7.68641 11.94 7.13641 11.92 6.73641 12.2C6.34641 12.49 6.23641 13 6.47641 13.41L8.72641 17.07C8.94641 17.41 9.32641 17.62 9.75641 17.62C10.1664 17.62 10.5564 17.41 10.7764 17.07C11.1364 16.6 18.0064 8.41004 18.0064 8.41004C18.9064 7.49004 17.8164 6.68004 17.0964 7.38004V7.39004Z' fill='white'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 0 0.125rem;
+        background-size: 1.5rem 1.5rem;
+    }
+}
