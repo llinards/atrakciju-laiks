@@ -37,7 +37,7 @@ class ProductFactory extends Factory
     public function discounted(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'original_price' => round($attributes['price'] * 1.25, 2),
+            'discount_price' => round($attributes['price'] * 0.8, 2),
         ]);
     }
 

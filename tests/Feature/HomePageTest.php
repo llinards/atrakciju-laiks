@@ -1,7 +1,9 @@
 <?php
 
+use App\Enums\ProductSize;
 use App\Models\Category;
 use App\Models\Faq;
+use App\Models\Product;
 
 test('home page renders all sections', function () {
     Category::factory()->create(['title' => 'Piepūšamās pilis', 'slug' => 'piepusamas-pilis']);
@@ -32,15 +34,32 @@ test('category section is hidden when no visible categories exist', function () 
     $response->assertDontSee('Ko vēlies nomāt šodien?');
 });
 
-test('header menu links to attraction size filters', function () {
+test('header menu shows size filter links for categories with sized products', function () {
+    $withSizes = Category::factory()->create(['title' => 'Piepūšamās atrakcijas', 'slug' => 'piepusamas-atrakcijas']);
+    Product::factory()->for($withSizes)->sized(ProductSize::Large)->create();
+
+    $plain = Category::factory()->create(['title' => 'Teltis', 'slug' => 'teltis']);
+    Product::factory()->for($plain)->create();
+
     $response = $this->get(route('home'));
 
     $response->assertSuccessful();
-    $response->assertDontSee('Visas piepūšamās atrakcijas');
-    $response->assertSee('Lielās atrakcijas');
-    $response->assertSee('Vidējās atrakcijas');
-    $response->assertSee('Mazās atrakcijas');
+    $response->assertSee('Lielās piepūšamās atrakcijas');
+    $response->assertSee('Vidējās piepūšamās atrakcijas');
+    $response->assertSee('Mazās piepūšamās atrakcijas');
     $response->assertSee(route('category.show', ['category' => 'piepusamas-atrakcijas', 'size' => 'large']), escape: false);
+    $response->assertSee(route('category.show', 'teltis'), escape: false);
+});
+
+test('hidden categories are not shown in the header or footer menu', function () {
+    Category::factory()->create(['title' => 'Redzamā kategorija']);
+    Category::factory()->hidden()->create(['title' => 'Paslēptā kategorija']);
+
+    $response = $this->get(route('home'));
+
+    $response->assertSuccessful();
+    $response->assertSee('Redzamā kategorija');
+    $response->assertDontSee('Paslēptā kategorija');
 });
 
 test('home page does not load Flux assets', function () {

@@ -84,6 +84,10 @@ new #[Title('BUJ')] class extends Component {
     {
         $faq->update(['is_visible' => ! $faq->is_visible]);
         unset($this->faqs);
+
+        Flux::toast(variant: 'success', text: $faq->is_visible
+            ? __('Question is now visible.')
+            : __('Question is now hidden.'));
     }
 
     public function delete(Faq $faq): void

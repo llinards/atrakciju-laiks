@@ -17,14 +17,31 @@ class Product extends Model
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
 
+    /**
+     * Stored product images are cropped to these dimensions — the same 5:4
+     * ratio the public product card renders.
+     */
+    public const IMAGE_WIDTH = 1200;
+
+    public const IMAGE_HEIGHT = 960;
+
     protected function casts(): array
     {
         return [
             'price' => 'decimal:2',
-            'original_price' => 'decimal:2',
+            'discount_price' => 'decimal:2',
             'size' => ProductSize::class,
             'is_visible' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Product $product): void {
+            if ($product->path !== null) {
+                Storage::disk('public')->delete($product->path);
+            }
+        });
     }
 
     /**
@@ -53,34 +70,57 @@ class Product extends Model
         $query->orderBy('position')->orderBy('id');
     }
 
+    /**
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function sized(Builder $query): void
+    {
+        $query->whereNotNull('size');
+    }
+
     public function url(): ?string
     {
         return $this->path ? Storage::disk('public')->url($this->path) : null;
     }
 
+    /**
+     * The effective price shown to visitors: the discount price when a
+     * valid one is set, otherwise the standard price.
+     */
     public function formattedPrice(): string
     {
-        return Number::format((float) $this->price, maxPrecision: 2).'€';
-    }
+        $price = $this->hasDiscount() ? $this->discount_price : $this->price;
 
-    public function formattedOriginalPrice(): ?string
-    {
-        if ($this->original_price === null || (float) $this->original_price <= (float) $this->price) {
-            return null;
-        }
-
-        return Number::format((float) $this->original_price, maxPrecision: 2).'€';
+        return Number::format((float) $price, maxPrecision: 2).'€';
     }
 
     /**
-     * Discount percent derived from the original price, e.g. 160€ → 130€ = 19.
+     * The standard price, shown struck through while a discount is active.
      */
-    public function discountPercent(): ?int
+    public function formattedOriginalPrice(): ?string
     {
-        if ($this->formattedOriginalPrice() === null) {
+        if (! $this->hasDiscount()) {
             return null;
         }
 
-        return (int) round((1 - (float) $this->price / (float) $this->original_price) * 100);
+        return Number::format((float) $this->price, maxPrecision: 2).'€';
+    }
+
+    /**
+     * Discount percent derived from the two prices, e.g. 160€ → 130€ = 19.
+     */
+    public function discountPercent(): ?int
+    {
+        if (! $this->hasDiscount()) {
+            return null;
+        }
+
+        return (int) round((1 - (float) $this->discount_price / (float) $this->price) * 100);
+    }
+
+    public function hasDiscount(): bool
+    {
+        return $this->discount_price !== null && (float) $this->discount_price < (float) $this->price;
     }
 }

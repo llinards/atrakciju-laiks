@@ -38,7 +38,7 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
     #[Computed]
     public function categories(): Collection
     {
-        return Category::query()->visible()->ordered()->get();
+        return Category::navigation();
     }
 
     /**
@@ -66,7 +66,7 @@ new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
                 <x-public.card-carousel class="-mx-4 lg:mx-0">
                     @foreach ($this->categories as $category)
                         <x-public.category-card wire:key="category-{{ $category->id }}" :color="$category->color->value"
-                            :title="$category->title" :description="$category->tagline" :href="route('category.show', $category->slug)"
+                            :title="$category->title" :description="$category->description" :href="route('category.show', $category->slug)"
                             :image="$category->url()" :image-alt="$category->title" />
                     @endforeach
                 </x-public.card-carousel>

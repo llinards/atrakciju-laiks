@@ -11,7 +11,7 @@
 <article {{ $attributes->merge(['class' => 'flex w-full flex-col gap-4 rounded-[22px] border border-gray-200 bg-white p-4 shadow-xs']) }}>
     <div class="relative aspect-[5/4] w-full overflow-clip rounded-2xl bg-gray-100">
         @if ($image)
-            <img src="{{ $image }}" alt="{{ $imageAlt }}" class="size-full object-cover">
+            <img src="{{ $image }}" alt="{{ $imageAlt }}" class="absolute inset-0 size-full object-cover">
         @else
             <img src="{{ asset('images/pattern-1.svg') }}" alt="" aria-hidden="true"
                 class="pointer-events-none absolute -left-10 -top-10 h-[150%] w-[130%] max-w-none opacity-8">

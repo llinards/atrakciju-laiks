@@ -30,7 +30,6 @@ class CategorySeeder extends Seeder
                 ['slug' => $category['slug']],
                 [
                     'title' => $category['title'],
-                    'tagline' => $category['tagline'],
                     'description' => $category['description'],
                     'color' => $category['color'],
                     'path' => $this->publishImage($category['slug'], $category['image']),
@@ -110,7 +109,7 @@ class CategorySeeder extends Seeder
      * price-based estimate (130€ namiņi → mazās, 160–170€ → vidējās, 180€+ → lielās)
      * to be corrected in the admin panel once size data exists.
      *
-     * @return list<array{title: string, slug: string, tagline: string, description: string, color: CategoryColor, image: string, products: list<array{name: string, price: float, original_price?: float, size?: ProductSize, image_path?: string}>}>
+     * @return list<array{title: string, slug: string, description: string, color: CategoryColor, image: string, products: list<array{name: string, price: float, discount_price?: float, size?: ProductSize, image_path?: string}>}>
      */
     private function categories(): array
     {
@@ -118,7 +117,6 @@ class CategorySeeder extends Seeder
             [
                 'title' => 'Piepūšamās atrakcijas',
                 'slug' => 'piepusamas-atrakcijas',
-                'tagline' => 'Jautrībai, kustībai un bērnu priekam',
                 'description' => 'Atrakcijas bērnu ballītēm, pasākumiem un aktīvai atpūtai visā Latvijā.',
                 'color' => CategoryColor::Splash,
                 'image' => 'category-atrakcijas.png',
@@ -146,7 +144,6 @@ class CategorySeeder extends Seeder
             [
                 'title' => 'Teltis',
                 'slug' => 'teltis',
-                'tagline' => 'Ērtam pasākumam jebkuros laikapstākļos',
                 'description' => 'Teltis pasākumiem, svinībām un brīvdabas aktivitātēm jebkuros laikapstākļos.',
                 'color' => CategoryColor::Brand,
                 'image' => 'category-teltis.png',
@@ -158,7 +155,6 @@ class CategorySeeder extends Seeder
             [
                 'title' => 'Nojumes',
                 'slug' => 'nojumes',
-                'tagline' => 'Praktisks risinājums svinībām un pasākumiem ārā',
                 'description' => 'Nojumes svinībām, tirdziņiem un pasākumiem zem klajas debess.',
                 'color' => CategoryColor::Sun,
                 'image' => 'category-nojumes.png',

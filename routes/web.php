@@ -12,6 +12,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('hero-slides', 'pages::admin.hero-slides')->name('hero-slides.edit');
 
     Route::livewire('faqs', 'pages::admin.faqs')->name('faqs.edit');
+
+    Route::livewire('categories', 'pages::admin.categories')->name('categories.edit');
+
+    Route::livewire('products', 'pages::admin.products')->name('products.edit');
 });
 
 require __DIR__.'/settings.php';

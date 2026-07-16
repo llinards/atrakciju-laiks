@@ -1,9 +1,12 @@
 @php
-    // Category slugs are seeded/managed in admin — keep these in sync with the categories table.
+    // Visible categories drive the menu, followed by the static pages.
     $menuItems = [
-        ['label' => 'Piepūšamās atrakcijas', 'href' => route('category.show', 'piepusamas-atrakcijas')],
-        ['label' => 'Teltis', 'href' => route('category.show', 'teltis')],
-        ['label' => 'Nojumes', 'href' => route('category.show', 'nojumes')],
+        ...\App\Models\Category::navigation()
+            ->map(fn (\App\Models\Category $category): array => [
+                'label' => $category->title,
+                'href' => route('category.show', $category->slug),
+            ])
+            ->all(),
         ['label' => 'Galerija', 'href' => '#'],
         ['label' => 'Pārdošanas sadaļa', 'href' => '#'],
         ['label' => 'Kontakti', 'href' => '#'],

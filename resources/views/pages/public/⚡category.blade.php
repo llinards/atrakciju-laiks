@@ -61,7 +61,7 @@ new #[Layout('layouts::public')] class extends Component {
     #[Computed]
     public function hasSizes(): bool
     {
-        return $this->category->products()->visible()->whereNotNull('size')->exists();
+        return $this->category->sizedProducts()->exists();
     }
 
     /**

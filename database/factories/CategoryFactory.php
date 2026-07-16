@@ -24,7 +24,6 @@ class CategoryFactory extends Factory
         return [
             'title' => $title,
             'slug' => Str::slug($title),
-            'tagline' => $this->faker->sentence(4),
             'description' => $this->faker->sentence(),
             'color' => $this->faker->randomElement(CategoryColor::cases()),
             'is_visible' => true,

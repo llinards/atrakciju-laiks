@@ -1,13 +1,8 @@
 @php
-    // Category slugs are seeded/managed in admin — keep these in sync with the categories table.
-    $attractionItems = array_map(fn (\App\Enums\ProductSize $size): array => [
-        'label' => $size->label().' atrakcijas',
-        'href' => route('category.show', ['category' => 'piepusamas-atrakcijas', 'size' => $size->value]),
-    ], \App\Enums\ProductSize::cases());
+    // Visible categories drive the menu; ones with sized products become size-filter dropdowns.
+    $categories = \App\Models\Category::navigation();
 
     $navigationItems = [
-        ['label' => 'Teltis', 'href' => route('category.show', 'teltis')],
-        ['label' => 'Nojumes', 'href' => route('category.show', 'nojumes')],
         ['label' => 'Pārdošanas sadaļa', 'href' => '#'],
         ['label' => 'Galerija', 'href' => '#'],
         ['label' => 'Kontakti', 'href' => '#'],
@@ -33,30 +28,38 @@
         </div>
 
         <div class="hidden items-center gap-1 lg:flex">
-            <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                <button
-                    type="button"
-                    class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    @click="open = !open"
-                    :aria-expanded="open"
-                >
-                    Piepūšamās atrakcijas
-                    <x-public.icons.chevron-down class="size-5 transition-transform duration-200" x-bind:class="open && 'rotate-180'" />
-                </button>
+            @foreach ($categories as $category)
+                @if ($category->has_size_filter)
+                    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                        <button
+                            type="button"
+                            class="flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                            @click="open = !open"
+                            :aria-expanded="open"
+                        >
+                            {{ $category->title }}
+                            <x-public.icons.chevron-down class="size-5 transition-transform duration-200" x-bind:class="open && 'rotate-180'" />
+                        </button>
 
-                <div
-                    x-cloak
-                    x-show="open"
-                    x-transition.origin.top
-                    class="absolute left-0 top-full z-20 mt-2 min-w-56 rounded-xl border border-gray-100 bg-white py-2 shadow-lg"
-                >
-                    @foreach ($attractionItems as $item)
-                        <a href="{{ $item['href'] }}" wire:navigate class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-                            {{ $item['label'] }}
-                        </a>
-                    @endforeach
-                </div>
-            </div>
+                        <div
+                            x-cloak
+                            x-show="open"
+                            x-transition.origin.top
+                            class="absolute left-0 top-full z-20 mt-2 min-w-56 rounded-xl border border-gray-100 bg-white py-2 shadow-lg"
+                        >
+                            @foreach ($category->sizeFilterLinks() as $item)
+                                <a href="{{ $item['href'] }}" wire:navigate class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+                                    {{ $item['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('category.show', $category->slug) }}" wire:navigate class="rounded-xl px-3.5 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+                        {{ $category->title }}
+                    </a>
+                @endif
+            @endforeach
 
             @foreach ($navigationItems as $item)
                 <a href="{{ $item['href'] }}" @if ($item['href'] !== '#') wire:navigate @endif class="rounded-xl px-3.5 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">
@@ -81,13 +84,17 @@
     </nav>
 
     <div x-cloak x-show="mobileMenuOpen" x-collapse.duration.300ms class="border-t border-gray-100 px-4 pb-4 pt-2 lg:hidden">
-        <a href="{{ route('category.show', 'piepusamas-atrakcijas') }}" wire:navigate class="block rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-            Piepūšamās atrakcijas
-        </a>
-        @foreach ($attractionItems as $item)
-            <a href="{{ $item['href'] }}" wire:navigate class="block rounded-xl py-2.5 pl-7 pr-3.5 text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-gray-900">
-                {{ $item['label'] }}
+        @foreach ($categories as $category)
+            <a href="{{ route('category.show', $category->slug) }}" wire:navigate class="block rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">
+                {{ $category->title }}
             </a>
+            @if ($category->has_size_filter)
+                @foreach ($category->sizeFilterLinks() as $item)
+                    <a href="{{ $item['href'] }}" wire:navigate class="block rounded-xl py-2.5 pl-7 pr-3.5 text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-gray-900">
+                        {{ $item['label'] }}
+                    </a>
+                @endforeach
+            @endif
         @endforeach
         @foreach ($navigationItems as $item)
             <a href="{{ $item['href'] }}" @if ($item['href'] !== '#') wire:navigate @endif class="block rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900">

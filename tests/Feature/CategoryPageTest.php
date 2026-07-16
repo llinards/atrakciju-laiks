@@ -31,8 +31,8 @@ test('discounted product shows struck original price and computed percent badge'
 
     Product::factory()->for($category)->create([
         'name' => 'Smurfi',
-        'price' => 130,
-        'original_price' => 160,
+        'price' => 160,
+        'discount_price' => 130,
     ]);
 
     $response = $this->get(route('category.show', $category->slug));
@@ -51,12 +51,12 @@ test('product without discount shows no atlaide badge', function () {
     $this->get(route('category.show', $category->slug))->assertDontSee('atlaide');
 });
 
-test('original price lower than or equal to price is not shown as a discount', function () {
+test('a discount price equal to or above the price is not shown as a discount', function () {
     $category = Category::factory()->create();
 
     $product = Product::factory()->for($category)->create([
         'price' => 130,
-        'original_price' => 130,
+        'discount_price' => 130,
     ]);
 
     expect($product->formattedOriginalPrice())->toBeNull()

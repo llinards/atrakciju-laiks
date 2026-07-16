@@ -27,6 +27,14 @@
                     <flux:sidebar.item icon="question-mark-circle" :href="route('faqs.edit')" :current="request()->routeIs('faqs.edit')" wire:navigate>
                         {{ __('FAQ') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="squares-2x2" :href="route('categories.edit')" :current="request()->routeIs('categories.edit')" wire:navigate>
+                        {{ __('Categories') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="cube" :href="route('products.edit')" :current="request()->routeIs('products.edit')" wire:navigate>
+                        {{ __('Products') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
