@@ -30,7 +30,7 @@
         </h3>
 
         <p class="flex flex-wrap items-center gap-x-3 gap-y-1 font-heading text-2xl font-bold leading-tight tracking-tight text-brand">
-            Nomas cena {{ $price }}
+            Cena nomai no {{ $price }}
 
             @if ($originalPrice)
                 <span class="text-xl text-gray-400 line-through">{{ $originalPrice }}</span>

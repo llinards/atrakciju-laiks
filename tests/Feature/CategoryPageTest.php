@@ -23,7 +23,7 @@ test('category page renders title, description and visible products', function (
         'Atrakcijas bērnu ballītēm, pasākumiem un aktīvai atpūtai visā Latvijā.',
         'Piepūšamā pils &quot;Džungļi&quot;',
     ], escape: false);
-    $response->assertSee('Nomas cena 130€');
+    $response->assertSee('Cena nomai no 130€');
 });
 
 test('discounted product shows struck original price and computed percent badge', function () {
@@ -38,7 +38,7 @@ test('discounted product shows struck original price and computed percent badge'
     $response = $this->get(route('category.show', $category->slug));
 
     $response->assertSuccessful();
-    $response->assertSee('Nomas cena 130€');
+    $response->assertSee('Cena nomai no 130€');
     $response->assertSee('160€');
     $response->assertSee('19% atlaide');
 });
