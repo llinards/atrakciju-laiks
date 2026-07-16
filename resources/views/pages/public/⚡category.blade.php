@@ -63,6 +63,15 @@ new #[Layout('layouts::public')] class extends Component {
     {
         return $this->category->products()->visible()->whereNotNull('size')->exists();
     }
+
+    /**
+     * Pagination swaps the grid in place, so restore the viewport to the top
+     * instead of leaving the visitor at the bottom where the buttons sit.
+     */
+    public function updatedPaginators(int $page, string $pageName): void
+    {
+        $this->js('scrollToTop');
+    }
 };
 ?>
 
@@ -116,3 +125,9 @@ new #[Layout('layouts::public')] class extends Component {
         @endif
     </div>
 </div>
+
+<script>
+    this.$js.scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+</script>
