@@ -2,7 +2,7 @@
     'name',
     'price',
     'priceLabel' => 'Cena nomai no',
-    'ctaLabel' => 'Rezervēt',
+    'ctaLabel' => 'Apskatīt',
     'originalPrice' => null,
     'discountPercent' => null,
     'isNew' => false,
@@ -11,7 +11,8 @@
     'href' => '#',
 ])
 
-<article {{ $attributes->merge(['class' => 'flex w-full flex-col gap-4 rounded-[22px] border border-gray-200 bg-white p-4 shadow-xs']) }}>
+<article
+    {{ $attributes->merge(['class' => 'flex w-full flex-col gap-4 rounded-[22px] border border-gray-200 bg-white p-4 shadow-xs']) }}>
     <div class="relative aspect-[5/4] w-full overflow-clip rounded-2xl bg-gray-100">
         @if ($image)
             <img src="{{ $image }}" alt="{{ $imageAlt }}" class="absolute inset-0 size-full object-cover">
@@ -21,13 +22,15 @@
         @endif
 
         @if ($isNew)
-            <span class="absolute left-3 top-3 rounded-full bg-brand px-3 py-1.5 text-sm font-semibold text-white shadow-xs">
+            <span
+                class="absolute left-3 top-3 rounded-full bg-brand px-3 py-1.5 text-sm font-semibold text-white shadow-xs">
                 JAUNUMS!
             </span>
         @endif
 
         @if ($discountPercent)
-            <span class="absolute right-3 top-3 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs">
+            <span
+                class="absolute right-3 top-3 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs">
                 {{ $discountPercent }}% atlaide
             </span>
         @endif
@@ -38,7 +41,8 @@
             {{ $name }}
         </h3>
 
-        <p class="flex flex-wrap items-center gap-x-3 gap-y-1 font-heading text-2xl font-bold leading-tight tracking-tight text-brand">
+        <p
+            class="flex flex-wrap items-center gap-x-3 gap-y-1 font-heading text-2xl font-bold leading-tight tracking-tight text-brand">
             {{ $priceLabel }} {{ $price }}
 
             @if ($originalPrice)
