@@ -10,6 +10,7 @@
         ['label' => 'Galerija', 'href' => route('gallery.index')],
         ['label' => 'Pārdošanas sadaļa', 'href' => route('sale.index')],
         ['label' => 'Kontakti', 'href' => route('contact')],
+        ['label' => 'Privātuma politika', 'href' => route('privacy')],
     ];
 @endphp
 

@@ -16,6 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             ApplySiteSettings::class,
         ]);
+
+        // The cookie-consent package writes and reads its preference cookie
+        // unencrypted, so EncryptCookies must leave it untouched. Must match
+        // cookieconsent.cookie.name (config is not yet available here).
+        $middleware->encryptCookies(except: [
+            'atrakciju_laiks_cookie_consent',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

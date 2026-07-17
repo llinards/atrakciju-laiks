@@ -43,6 +43,11 @@ Route::livewire('/galerija', 'pages::public.gallery')->name('gallery.index');
 
 Route::livewire('/galerija/{galleryCategory:slug}', 'pages::public.gallery-category')->name('gallery.show');
 
+// Registered before the wildcards so "privatuma-politika" wins over
+// category slugs (and becomes a reserved path via NotReservedPath
+// automatically).
+Route::livewire('/privatuma-politika', 'pages::public.privacy-policy')->name('privacy');
+
 // Products flagged for sale, across all categories. Registered before the
 // wildcards so "pardosana" wins over category slugs (and becomes a reserved
 // path via NotReservedPath automatically).

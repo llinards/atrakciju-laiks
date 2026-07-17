@@ -20,6 +20,7 @@ class SitemapController extends Controller
             ['loc' => route('gallery.index')],
             ['loc' => route('sale.index')],
             ['loc' => route('contact')],
+            ['loc' => route('privacy')],
         ]);
 
         $urls = $urls

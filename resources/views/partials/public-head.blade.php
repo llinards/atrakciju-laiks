@@ -32,5 +32,7 @@
 
 @fonts
 
+@cookieconsentscripts
+
 @vite(['resources/css/public.css', 'resources/js/public.js'])
 @livewireStyles

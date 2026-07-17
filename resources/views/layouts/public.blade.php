@@ -17,6 +17,8 @@
     <x-public.scroll-top />
     <x-public.reserve-modal />
 
+    @cookieconsentview
+
     @livewireScripts
 </body>
 
