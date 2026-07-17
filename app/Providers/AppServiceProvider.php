@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\Seo;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
@@ -18,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(Seo::class);
     }
 
     /**

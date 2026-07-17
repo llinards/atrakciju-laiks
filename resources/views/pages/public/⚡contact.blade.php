@@ -1,10 +1,19 @@
 <?php
 
+use App\Support\Seo;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::public')] #[Title('Kontakti')] class extends Component {};
+new #[Layout('layouts::public')] #[Title('Kontakti')] class extends Component {
+    public function rendering(View $view): void
+    {
+        app(Seo::class)
+            ->describe('Sazinies ar mums — palīdzēsim izvēlēties atrakcijas taviem svētkiem. Zvani, raksti vai apciemo mūs klātienē.')
+            ->canonical(route('contact'));
+    }
+};
 ?>
 
 <div class="px-4 pb-16 pt-8 lg:px-8">

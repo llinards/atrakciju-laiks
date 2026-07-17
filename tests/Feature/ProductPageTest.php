@@ -191,7 +191,9 @@ test('related products show visible siblings only, excluding the current product
     $response->assertSee('Fortnite');
     $response->assertDontSee('Slēptais produkts');
     $response->assertDontSee('Citas kategorijas produkts');
-    $response->assertDontSee(route('product.show', [$category, $product]).'"', escape: false);
+    // The page's own URL now appears in the canonical link, so the related
+    // list is checked via the cards' wire:key instead.
+    $response->assertDontSee('wire:key="related-'.$product->id.'"', escape: false);
 });
 
 test('related products section is hidden without siblings', function () {

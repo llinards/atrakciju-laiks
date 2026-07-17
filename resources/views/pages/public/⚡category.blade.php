@@ -2,6 +2,7 @@
 
 use App\Enums\ProductSize;
 use App\Models\Category;
+use App\Support\Seo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -26,6 +27,19 @@ new #[Layout('layouts::public')] class extends Component {
     public function rendering(View $view): void
     {
         $view->title($this->category->title);
+
+        app(Seo::class)
+            ->describe($this->category->description)
+            ->canonical(route('category.show', $this->category))
+            ->image($this->category->url())
+            ->jsonLd([
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Sākums', 'item' => route('home')],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => $this->category->title],
+                ],
+            ]);
     }
 
     /**

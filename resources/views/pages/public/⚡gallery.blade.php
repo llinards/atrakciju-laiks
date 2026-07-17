@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\GalleryCategory;
+use App\Support\Seo;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -11,6 +12,10 @@ new #[Layout('layouts::public')] class extends Component {
     public function rendering(View $view): void
     {
         $view->title('Galerija');
+
+        app(Seo::class)
+            ->describe('Ieskaties mūsu atrakcijās darbībā un izvēlies piemērotāko risinājumu savam pasākumam.')
+            ->canonical(route('gallery.index'));
     }
 
     /**

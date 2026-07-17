@@ -3,13 +3,58 @@
 use App\Models\Category;
 use App\Models\Faq;
 use App\Models\HeroSlide;
+use App\Support\Seo;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
+    public function rendering(View $view): void
+    {
+        $seo = app(Seo::class)
+            ->canonical(route('home'))
+            ->image($this->heroSlides()[0]['src'])
+            ->jsonLd([
+            '@context' => 'https://schema.org',
+            '@type' => 'LocalBusiness',
+            'name' => config('app.name'),
+            'description' => config('site.description'),
+            'url' => route('home'),
+            'telephone' => config('site.phone'),
+            'email' => config('site.email'),
+            'image' => asset('images/logo.png'),
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => config('site.address'),
+                'addressCountry' => 'LV',
+            ],
+            'sameAs' => array_values(array_filter([
+                config('site.facebook'),
+                config('site.youtube'),
+            ])),
+        ]);
+
+        if ($this->faqs->isNotEmpty()) {
+            $seo->jsonLd([
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => $this->faqs
+                    ->map(fn (Faq $faq): array => [
+                        '@type' => 'Question',
+                        'name' => $faq->question,
+                        'acceptedAnswer' => [
+                            '@type' => 'Answer',
+                            'text' => $faq->answer,
+                        ],
+                    ])
+                    ->all(),
+            ]);
+        }
+    }
+
     /**
      * Hero slides managed from the admin panel, with bundled defaults
      * until at least one image has been uploaded.

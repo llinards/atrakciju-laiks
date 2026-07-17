@@ -3,6 +3,7 @@
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Support\Seo;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -37,6 +38,63 @@ new #[Layout('layouts::public')] class extends Component {
     public function rendering(View $view): void
     {
         $view->title($this->product->name);
+
+        // The sale route shows the same product as the category route, so
+        // the category URL is always the canonical one.
+        $canonical = route('product.show', [$this->product->category, $this->product]);
+
+        app(Seo::class)
+            ->describe($this->product->description)
+            ->canonical($canonical)
+            ->image($this->product->url())
+            ->type('product')
+            ->jsonLd($this->productSchema($canonical))
+            ->jsonLd([
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Sākums', 'item' => route('home')],
+                    ['@type' => 'ListItem', 'position' => 2, 'name' => $this->product->category->title, 'item' => route('category.show', $this->product->category)],
+                    ['@type' => 'ListItem', 'position' => 3, 'name' => $this->product->name],
+                ],
+            ]);
+    }
+
+    /**
+     * The schema.org Product graph, describing the canonical (rental)
+     * presentation of the product.
+     *
+     * @return array<string, mixed>
+     */
+    private function productSchema(string $canonical): array
+    {
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Product',
+            'name' => $this->product->name,
+            'url' => $canonical,
+            'image' => array_column($this->galleryImages(), 'src'),
+        ];
+
+        $description = trim(strip_tags($this->product->description ?? ''));
+
+        if ($description !== '') {
+            $schema['description'] = $description;
+        }
+
+        $price = $this->product->discount_price ?? $this->product->price;
+
+        if ($price !== null) {
+            $schema['offers'] = [
+                '@type' => 'Offer',
+                'price' => $price,
+                'priceCurrency' => 'EUR',
+                'availability' => 'https://schema.org/InStock',
+                'url' => $canonical,
+            ];
+        }
+
+        return $schema;
     }
 
     /**

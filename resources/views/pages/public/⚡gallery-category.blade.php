@@ -2,6 +2,7 @@
 
 use App\Models\GalleryCategory;
 use App\Models\GalleryImage;
+use App\Support\Seo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -22,6 +23,10 @@ new #[Layout('layouts::public')] class extends Component {
     public function rendering(View $view): void
     {
         $view->title($this->galleryCategory->title);
+
+        app(Seo::class)
+            ->describe("{$this->galleryCategory->title} — ieskaties mūsu atrakcijās darbībā un izvēlies piemērotāko risinājumu savam pasākumam.")
+            ->canonical(route('gallery.show', $this->galleryCategory));
     }
 
     /**

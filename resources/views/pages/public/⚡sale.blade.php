@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Product;
+use App\Support\Seo;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -14,6 +15,10 @@ new #[Layout('layouts::public')] class extends Component {
     public function rendering(View $view): void
     {
         $view->title('Pārdošanas sadaļa');
+
+        app(Seo::class)
+            ->describe('Iegādājies piepūšamās atrakcijas, teltis un nojumes — pārdošanā pieejamais aprīkojums no Atrakciju Laiks.')
+            ->canonical(route('sale.index'));
     }
 
     /**
