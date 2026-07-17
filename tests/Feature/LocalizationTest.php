@@ -24,5 +24,5 @@ test('home page renders in latvian', function () {
     $response = $this->get(route('home'));
 
     $response->assertOk()
-        ->assertSee('Sākums');
+        ->assertSee('Atrakciju noma');
 });

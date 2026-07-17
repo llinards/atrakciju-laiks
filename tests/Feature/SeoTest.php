@@ -10,7 +10,7 @@ test('home page has default meta description, canonical, and open graph tags', f
     $response->assertSuccessful();
     $response->assertSee('<meta name="description" content="'.e(config('site.description')).'"', escape: false);
     $response->assertSee('<link rel="canonical" href="'.route('home').'"', escape: false);
-    $response->assertSee('<meta property="og:title"', escape: false);
+    $response->assertSee('<meta property="og:title" content="'.e('Atrakciju noma - '.config('app.name')).'"', escape: false);
     $response->assertSee('<meta property="og:image"', escape: false);
     $response->assertSee('<meta property="og:locale" content="lv_LV"', escape: false);
     $response->assertSee('<meta name="twitter:card" content="summary_large_image"', escape: false);

@@ -11,7 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::public')] #[Title('Sākums')] class extends Component {
+new #[Layout('layouts::public')] #[Title('Atrakciju noma')] class extends Component {
     public function rendering(View $view): void
     {
         $seo = app(Seo::class)
