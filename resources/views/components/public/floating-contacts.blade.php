@@ -21,7 +21,9 @@
     ];
 @endphp
 
-<div {{ $attributes->merge(['class' => 'fixed bottom-24 right-6 z-30 md:bottom-auto md:right-7 md:top-1/2 md:-translate-y-1/2']) }}>
+{{-- right-3 + size-12 centers the FAB 36px from the edge, on the same axis as
+     the header hamburger (px-4 + half of its size-10). --}}
+<div {{ $attributes->merge(['class' => 'fixed bottom-24 right-3 z-30 md:bottom-auto md:right-7 md:top-1/2 md:-translate-y-1/2']) }}>
     {{-- Desktop: always-visible vertical rail --}}
     <div class="hidden flex-col items-center gap-5 rounded-full bg-brand px-3 py-6 shadow-lg md:flex">
         @foreach ($contacts as $contact)
@@ -45,10 +47,10 @@
         </div>
 
         <button type="button" @click="open = !open" :aria-expanded="open"
-            class="flex size-14 items-center justify-center rounded-full bg-brand text-white shadow-lg transition-colors hover:bg-brand-dark"
+            class="flex size-12 items-center justify-center rounded-full bg-brand text-white shadow-lg transition-colors hover:bg-brand-dark"
             aria-label="Kontakti">
-            <x-public.icons.phone x-show="!open" class="size-6" />
-            <x-public.icons.close x-cloak x-show="open" class="size-6" />
+            <x-public.icons.phone x-show="!open" class="size-5" />
+            <x-public.icons.close x-cloak x-show="open" class="size-5" />
         </button>
     </div>
 </div>
