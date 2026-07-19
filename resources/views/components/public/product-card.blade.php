@@ -1,7 +1,7 @@
 @props([
     'name',
     'price',
-    'priceLabel' => 'Cena nomai no',
+    'priceLabel' => 'Cena nomai',
     'ctaLabel' => 'Apskatīt',
     'originalPrice' => null,
     'discountPercent' => null,

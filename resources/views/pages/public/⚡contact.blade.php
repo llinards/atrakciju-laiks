@@ -9,9 +9,7 @@ use Livewire\Component;
 new #[Layout('layouts::public')] #[Title('Kontakti')] class extends Component {
     public function rendering(View $view): void
     {
-        app(Seo::class)
-            ->describe('Sazinies ar mums — palīdzēsim izvēlēties atrakcijas taviem svētkiem. Zvani, raksti vai apciemo mūs klātienē.')
-            ->canonical(route('contact'));
+        app(Seo::class)->describe('Sazinies ar mums — palīdzēsim izvēlēties atrakcijas Taviem svētkiem. Zvani, raksti vai apciemo mūs klātienē.')->canonical(route('contact'));
     }
 };
 ?>
@@ -25,12 +23,13 @@ new #[Layout('layouts::public')] #[Title('Kontakti')] class extends Component {
         </a>
 
         <x-public.section-heading tag="h1" align="left"
-            subtitle="Sazinies ar mums — palīdzēsim izvēlēties atrakcijas taviem svētkiem.">
+            subtitle="Sazinies ar mums — palīdzēsim izvēlēties atrakcijas Taviem svētkiem.">
             Kontakti
         </x-public.section-heading>
 
         <div class="grid gap-8 lg:grid-cols-2 lg:gap-16">
-            <div class="flex flex-col items-start gap-6 rounded-[22px] border border-gray-200 bg-white p-6 shadow-xs lg:p-10">
+            <div
+                class="flex flex-col items-start gap-6 rounded-[22px] border border-gray-200 bg-white p-6 shadow-xs lg:p-10">
                 <a href="tel:{{ str_replace(' ', '', config('site.phone')) }}"
                     class="flex items-center gap-3 font-heading text-xl font-semibold text-gray-800 transition-colors hover:text-brand">
                     <x-public.icons.phone class="size-6 shrink-0 text-brand" />

@@ -16,7 +16,7 @@ test('product page renders name and price without detail sections for a bare pro
 
     $response->assertSuccessful();
     $response->assertSeeInOrder(['Atpakaļ', 'JAUNUMS! Minecraft'], escape: false);
-    $response->assertSee('Nomas cena no 180€');
+    $response->assertSee('Nomas cena 180€');
     $response->assertSee('Rezervēt');
 
     // Detail sections only render once their data exists.
@@ -46,7 +46,7 @@ test('discounted product shows struck original price', function () {
     $response = $this->get(route('product.show', [$category, $product]));
 
     $response->assertSuccessful();
-    $response->assertSee('Nomas cena no 130€');
+    $response->assertSee('Nomas cena 130€');
     $response->assertSee('160€');
 });
 

@@ -18,7 +18,7 @@ test('sale listing renders for-sale products with the sale price', function () {
     $response->assertSuccessful();
     $response->assertSeeInOrder(['Atpakaļ', 'Piepūšamā pils &quot;Džungļi&quot;'], escape: false);
     $response->assertSee('Pārdošanas cena: 520€');
-    $response->assertDontSee('Cena nomai no');
+    $response->assertDontSee('Cena nomai');
     $response->assertSee('Sazināties');
 });
 
@@ -107,7 +107,7 @@ test('sale detail page shows the sale price and contact CTA without rental conte
     $response->assertSee('Sazināties');
 
     // The rental-only content and badges stay hidden in sale mode.
-    $response->assertDontSee('Nomas cena no');
+    $response->assertDontSee('Nomas cena');
     $response->assertDontSee('Rezervēt');
     $response->assertDontSee('Noma un uzstādīšana');
     $response->assertDontSee('Cena par vienu nomas dienu:');
@@ -152,10 +152,10 @@ test('a for-sale product keeps its rental listing and detail page', function () 
 
     $this->get(route('category.show', $category->slug))
         ->assertSee('Minecraft')
-        ->assertSee('Cena nomai no 180€');
+        ->assertSee('Cena nomai 180€');
 
     $this->get(route('product.show', [$category, $product]))
-        ->assertSee('Nomas cena no 180€')
+        ->assertSee('Nomas cena 180€')
         ->assertSee('Rezervēt')
         ->assertDontSee('Pārdošanas cena:');
 });

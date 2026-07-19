@@ -52,11 +52,7 @@ new #[Layout('layouts::public')] class extends Component {
             ->jsonLd([
                 '@context' => 'https://schema.org',
                 '@type' => 'BreadcrumbList',
-                'itemListElement' => [
-                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Sākums', 'item' => route('home')],
-                    ['@type' => 'ListItem', 'position' => 2, 'name' => $this->product->category->title, 'item' => route('category.show', $this->product->category)],
-                    ['@type' => 'ListItem', 'position' => 3, 'name' => $this->product->name],
-                ],
+                'itemListElement' => [['@type' => 'ListItem', 'position' => 1, 'name' => 'Sākums', 'item' => route('home')], ['@type' => 'ListItem', 'position' => 2, 'name' => $this->product->category->title, 'item' => route('category.show', $this->product->category)], ['@type' => 'ListItem', 'position' => 3, 'name' => $this->product->name]],
             ]);
     }
 
@@ -107,10 +103,10 @@ new #[Layout('layouts::public')] class extends Component {
         $main = $this->product->url() ?? asset('images/pattern-1.svg');
 
         return $this->product->images
-            ->map(fn (ProductImage $image): string => $image->url())
+            ->map(fn(ProductImage $image): string => $image->url())
             ->prepend($main)
             ->map(
-                fn (string $src): array => [
+                fn(string $src): array => [
                     'src' => $src,
                     'alt' => $this->product->name,
                     'width' => Product::IMAGE_WIDTH,
@@ -162,8 +158,7 @@ new #[Layout('layouts::public')] class extends Component {
 
     public function hasRentalTab(): bool
     {
-        return ! $this->isSale()
-            && ($this->product->rental_prices !== null || $this->rentalTermsHtml() !== null);
+        return !$this->isSale() && ($this->product->rental_prices !== null || $this->rentalTermsHtml() !== null);
     }
 
     /**
@@ -182,7 +177,7 @@ new #[Layout('layouts::public')] class extends Component {
         }
 
         return collect(preg_split('/\R{2,}/', trim($text)) ?: [])
-            ->map(fn (string $paragraph): string => '<p>'.e($paragraph).'</p>')
+            ->map(fn(string $paragraph): string => '<p>' . e($paragraph) . '</p>')
             ->implode('');
     }
 };
@@ -198,7 +193,7 @@ new #[Layout('layouts::public')] class extends Component {
 
         <div class="grid gap-6 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-x-12">
             <div class="flex flex-col gap-2 lg:col-start-2 lg:row-start-1">
-                @if (! $this->isSale() && $product->is_new)
+                @if (!$this->isSale() && $product->is_new)
                     <span class="w-fit rounded-full bg-brand px-3 py-1.5 text-sm font-semibold text-white shadow-xs">
                         JAUNUMS!
                     </span>
@@ -213,10 +208,11 @@ new #[Layout('layouts::public')] class extends Component {
                     @if ($this->isSale())
                         Pārdošanas cena: {{ $product->formattedSalePrice() }}
                     @else
-                        Nomas cena no {{ $product->formattedPrice() }}
+                        Nomas cena {{ $product->formattedPrice() }}
 
                         @if ($product->formattedOriginalPrice())
-                            <span class="text-2xl text-gray-400 line-through">{{ $product->formattedOriginalPrice() }}</span>
+                            <span
+                                class="text-2xl text-gray-400 line-through">{{ $product->formattedOriginalPrice() }}</span>
                         @endif
                     @endif
                 </p>
@@ -255,8 +251,8 @@ new #[Layout('layouts::public')] class extends Component {
                     <div class="flex flex-col gap-2 lg:mx-auto lg:w-full lg:max-w-2xl">
                         <span class="text-sm font-semibold text-gray-600 lg:hidden">Filtrēt</span>
 
-                        <div class="flex w-full gap-2 rounded-full border border-gray-200 bg-white p-2 shadow-xs" role="tablist"
-                            aria-label="Informācija par atrakciju">
+                        <div class="flex w-full gap-2 rounded-full border border-gray-200 bg-white p-2 shadow-xs"
+                            role="tablist" aria-label="Informācija par atrakciju">
                             <button type="button" role="tab" @click="tab = 'about'"
                                 x-bind:aria-selected="tab === 'about' ? 'true' : 'false'"
                                 class="flex-1 rounded-full border px-4 py-2.5 font-heading text-sm font-bold transition-colors sm:text-base"
@@ -301,7 +297,8 @@ new #[Layout('layouts::public')] class extends Component {
                             <div class="flex flex-col gap-6">
                                 @if ($product->rental_prices !== null)
                                     <div class="flex flex-col gap-1">
-                                        <h2 class="font-heading text-lg font-bold text-gray-900">Cena par vienu nomas dienu:</h2>
+                                        <h2 class="font-heading text-lg font-bold text-gray-900">Cena par vienu nomas
+                                            dienu:</h2>
 
                                         <x-public.spec-table :rows="$product->rental_prices" />
                                     </div>
@@ -314,8 +311,8 @@ new #[Layout('layouts::public')] class extends Component {
                                 @endif
                             </div>
 
-                            <img src="{{ $product->url() ?? asset('images/pattern-1.svg') }}" alt="{{ $product->name }}"
-                                class="aspect-[5/4] w-full rounded-2xl object-cover">
+                            <img src="{{ $product->url() ?? asset('images/pattern-1.svg') }}"
+                                alt="{{ $product->name }}" class="aspect-[5/4] w-full rounded-2xl object-cover">
                         </div>
                     </section>
                 @endif
@@ -332,13 +329,12 @@ new #[Layout('layouts::public')] class extends Component {
                     @foreach ($this->relatedProducts as $related)
                         @if ($this->isSale())
                             <x-public.product-card wire:key="related-{{ $related->id }}" :name="$related->name"
-                                price-label="Pārdošanas cena:" :price="$related->formattedSalePrice()"
-                                cta-label="Sazināties" :image="$related->url()" :image-alt="$related->name"
-                                :href="route('sale.show', $related)" />
+                                price-label="Pārdošanas cena:" :price="$related->formattedSalePrice()" cta-label="Sazināties"
+                                :image="$related->url()" :image-alt="$related->name" :href="route('sale.show', $related)" />
                         @else
                             <x-public.product-card wire:key="related-{{ $related->id }}" :name="$related->name"
-                                :price="$related->formattedPrice()" :original-price="$related->formattedOriginalPrice()" :discount-percent="$related->discountPercent()" :is-new="$related->is_new" :image="$related->url()"
-                                :image-alt="$related->name" :href="route('product.show', [$category, $related])" />
+                                :price="$related->formattedPrice()" :original-price="$related->formattedOriginalPrice()" :discount-percent="$related->discountPercent()" :is-new="$related->is_new"
+                                :image="$related->url()" :image-alt="$related->name" :href="route('product.show', [$category, $related])" />
                         @endif
                     @endforeach
                 </x-public.arrow-carousel>
