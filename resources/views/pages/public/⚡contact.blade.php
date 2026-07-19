@@ -45,7 +45,7 @@ new #[Layout('layouts::public')] #[Title('Kontakti')] class extends Component {
 
                 <p class="flex items-start gap-3 font-heading text-xl font-semibold leading-7 text-gray-800">
                     <x-public.icons.map-pin class="size-6 shrink-0 text-brand" />
-                    {{ config('site.address') }}
+                    <x-public.address />
                 </p>
 
                 <div class="flex items-center gap-4">

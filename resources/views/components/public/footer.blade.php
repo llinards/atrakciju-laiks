@@ -57,7 +57,7 @@
                 {{ config('site.email') }}
             </a>
             <p class="text-[17px] leading-[21px] text-gray-900/50">
-                {{ config('site.address') }}
+                <x-public.address />
             </p>
         </div>
     </div>

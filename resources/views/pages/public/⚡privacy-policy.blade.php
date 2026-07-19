@@ -44,7 +44,7 @@ new #[Layout('layouts::public')] #[Title('Privātuma politika')] class extends C
             <section class="flex flex-col gap-3">
                 <h2 class="font-heading text-2xl font-bold text-gray-900">Vispārīga informācija</h2>
                 <p>
-                    Šo vietni uztur {{ config('app.name') }} ({{ config('site.address') }}).
+                    Šo vietni uztur {{ config('app.name') }} (<x-public.address />).
                     Ja tev ir jautājumi par šo privātuma politiku vai savu datu apstrādi, sazinies ar mums pa
                     e-pastu <a href="mailto:{{ config('site.email') }}" class="font-semibold text-brand underline underline-offset-2">{{ config('site.email') }}</a>
                     vai pa tālruni <a href="tel:{{ str_replace(' ', '', config('site.phone')) }}" class="font-semibold text-brand underline underline-offset-2">{{ config('site.phone') }}</a>.

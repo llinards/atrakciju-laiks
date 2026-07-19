@@ -1,0 +1,1 @@
+{!! preg_replace('/LV-\d{4}/', '<span class="whitespace-nowrap">$0</span>', e(config('site.address'))) !!}
