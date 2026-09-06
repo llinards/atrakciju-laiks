@@ -113,10 +113,10 @@ test('sale detail page shows the sale price and contact CTA without rental conte
     $response->assertDontSee('Cena par vienu nomas dienu:');
     $response->assertDontSee('JAUNUMS!');
 
-    // The description tab and included items keep rendering, without rental wording.
+    // The description tab keeps rendering, but the rental-only included items section stays hidden.
     $response->assertSee('Rekomendējama dažāda veida pasākumiem.');
-    $response->assertSee('enkurstieņi.');
-    $response->assertSee('Komplektā iekļauts:');
+    $response->assertDontSee('enkurstieņi.');
+    $response->assertDontSee('Komplektā iekļauts:');
     $response->assertDontSee('Nomas komplektā iekļauts:');
 });
 

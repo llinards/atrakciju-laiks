@@ -229,10 +229,10 @@ new #[Layout('layouts::public')] class extends Component {
                     </div>
                 @endif
 
-                @if ($product->included_items !== null)
+                @if (!$this->isSale() && $product->included_items !== null)
                     <div class="flex flex-col gap-3">
                         <h2 class="font-heading text-lg font-bold text-gray-900">
-                            {{ $this->isSale() ? 'Komplektā iekļauts:' : 'Nomas komplektā iekļauts:' }}
+                            Nomas komplektā iekļauts:
                         </h2>
 
                         <x-public.check-list :items="$product->included_items" />
